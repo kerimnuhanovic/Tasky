@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Tasky</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="dont_have_an_account">DON\'T HAVE AN ACCOUNT?</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="api_error_4xx">Oops something went wrong, please try again.</string>
+    <string name="api_error_5xx">Server is unavailable, please try again.</string>
+    <string name="api_error_unknown">Oops something went wrong, please try again.</string>
+    <string name="api_error_timeout">Oops something went wrong, please try again.</string>
+    <string name="api_error_no_connection">No connection: Mobile device unable to connect to Data or WiFi.</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="name">Name</string>
+    <string name="full_name_error">Full Name should contain at least 5 letters.</string>
+    <string name="invalid_email">Invalid email format. Please check and try again.</string>
+    <string name="invalid_password">Password must contain at least 9 characters, including a digit, a lowercase letter, and an uppercase letter.</string>
+    <string name="registration_successfully">You have registered successfully.</string>
+</resources>
