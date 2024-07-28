@@ -5,6 +5,7 @@ interface Preferences {
     fun readToken(): String?
     fun deleteToken()
     fun saveUserSessionInfo(accessToken: String, userId: String, fullName: String, accessTokenExpiration: Long)
+    fun readUserId(): String?
 
     companion object {
         const val KEY_TOKEN = "access_token"

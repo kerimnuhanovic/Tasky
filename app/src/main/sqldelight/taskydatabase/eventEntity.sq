@@ -1,0 +1,20 @@
+CREATE TABLE eventEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    isUserEventCreator INTEGER NOT NULL CHECK (isUserEventCreator IN (0,1)),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    fromTime INTEGER NOT NULL,
+    toTime INTEGER NOT NULL,
+    host TEXT NOT NULL,
+    remindAt INTEGER NOT NULL,
+    shouldBeDeleted INTEGER NOT NULL CHECK (shouldBeDeleted IN (0, 1)),
+    isAddedOnRemote INTEGER NOT NULL CHECK (isAddedOnRemote IN (0, 1)),
+    shouldBeUpdated INTEGER NOT NULL CHECK (shouldBeUpdated IN (0, 1))
+);
+
+insertEvent:
+INSERT OR REPLACE INTO eventEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+getLastInsertedRecordId:
+SELECT last_insert_rowid() FROM eventEntity;
+

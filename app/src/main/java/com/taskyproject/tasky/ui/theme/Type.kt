@@ -14,6 +14,21 @@ val Typography = Typography(
         fontSize = 28.sp,
         lineHeight = 30.sp
     ),
+    titleMedium = TextStyle(
+        fontFamily = InterFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 26.sp,
+        lineHeight = 25.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = InterFontFamily,
+        fontSize = 20.sp,
+    ),
+    labelLarge = TextStyle(
+        fontFamily = InterFontFamily,
+        fontSize = 18.sp,
+        lineHeight = 12.sp
+    ),
     labelMedium = TextStyle(
         fontFamily = InterFontFamily,
         fontSize = 16.sp,
@@ -23,6 +38,11 @@ val Typography = Typography(
         fontFamily = InterFontFamily,
         fontSize = 14.sp,
         lineHeight = 30.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = InterFontFamily,
+        fontSize = 16.sp,
+        lineHeight = 20.sp
     ),
     labelSmall = TextStyle(
         fontFamily = InterFontFamily,

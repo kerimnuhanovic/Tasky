@@ -30,4 +30,8 @@ class PreferencesImpl @Inject constructor(
         sharedPreferences.edit().putString(Preferences.FULL_NAME, fullName).apply()
         sharedPreferences.edit().putLong(Preferences.ACCESS_TOKEN_EXPIRATION, accessTokenExpiration).apply()
     }
+
+    override fun readUserId(): String? {
+        return sharedPreferences.getString(Preferences.USER_ID, null)
+    }
 }
