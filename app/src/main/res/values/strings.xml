@@ -18,4 +18,22 @@
     <string name="invalid_email">Invalid email format. Please check and try again.</string>
     <string name="invalid_password">Password must contain at least 9 characters, including a digit, a lowercase letter, and an uppercase letter.</string>
     <string name="registration_successfully">You have registered successfully.</string>
+    <string name="save">Save</string>
+    <string name="event">Event</string>
+    <string name="meeting">Meeting</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="photos">Photos</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="visitors">Visitors</string>
+    <string name="creator">creator</string>
+    <string name="edit_title">Edit Title</string>
+    <string name="enter_title">Enter title</string>
+    <string name="enter_description">Enter description</string>
+    <string name="add_visitors">Add Visitors</string>
+    <string name="add">Add</string>
+    <string name="not_existing_user">User with specified email does not exist</string>
+    <string name="going">Going</string>
+    <string name="not_going">Not Going</string>
+    <string name="event_created">Event has been successfully created</string>
 </resources>

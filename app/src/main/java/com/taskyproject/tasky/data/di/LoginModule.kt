@@ -14,6 +14,7 @@ import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import javax.inject.Singleton
 
@@ -30,6 +31,9 @@ object LoginModule {
             }
             install(ContentNegotiation) {
                 json()
+            }
+            headers {
+
             }
         }
     )

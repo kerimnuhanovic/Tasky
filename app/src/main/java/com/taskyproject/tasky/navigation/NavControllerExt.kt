@@ -10,3 +10,8 @@ fun NavController.navigate(uiEvent: UiEvent.Navigate) {
 fun NavController.navigateBack() {
     this.popBackStack()
 }
+
+fun NavController.navigateBackWithResult(key: String, value: String) {
+    this.previousBackStackEntry!!.savedStateHandle[key] = value
+    this.popBackStack()
+}

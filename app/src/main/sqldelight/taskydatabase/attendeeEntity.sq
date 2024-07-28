@@ -1,0 +1,11 @@
+CREATE TABLE attendeeEntity (
+    userId TEXT NOT NULL PRIMARY KEY,
+    fullName TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+getAttendeeByEmail:
+SELECT * FROM attendeeEntity WHERE email = :email;
+
+insertAttendee:
+INSERT OR REPLACE INTO attendeeEntity VALUES(?, ?, ?);

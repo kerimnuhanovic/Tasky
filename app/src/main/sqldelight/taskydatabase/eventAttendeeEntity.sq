@@ -1,0 +1,15 @@
+CREATE TABLE eventAttendeeEntity (
+    email TEXT NOT NULL,
+    fullName TEXT NOT NULL,
+    userId TEXT NOT NULL,
+    eventId TEXT NOT NULL,
+    isGoing INTEGER NOT NULL CHECK (isGoing IN (0,1)),
+    remindAt INTEGER NOT NULL,
+    createdAt TEXT NOT NULL,
+    PRIMARY KEY (userId, eventId),
+    FOREIGN KEY (eventId) REFERENCES eventEntity(id)
+);
+
+insertEventAttendee:
+INSERT OR REPLACE INTO eventAttendeeEntity VALUES (?, ?, ?, ?, ?, ?, ?);
+

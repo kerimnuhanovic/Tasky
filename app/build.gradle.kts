@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.ktor.logging)
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.json)
+    implementation(libs.coil)
 }
 
 kapt {

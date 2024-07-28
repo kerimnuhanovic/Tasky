@@ -79,8 +79,8 @@ private fun LoginScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
                 .background(PrimaryBlue)
+                .padding(it)
                 .verticalScroll(scrollState)
         ) {
             Text(

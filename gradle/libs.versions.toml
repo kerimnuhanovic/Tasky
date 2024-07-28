@@ -1,6 +1,7 @@
 [versions]
 agp = "8.4.1"
 androidDriver = "2.0.0"
+coil = "2.6.0"
 hiltAndroid = "2.48"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
@@ -21,6 +22,7 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }

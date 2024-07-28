@@ -1,0 +1,10 @@
+CREATE TABLE photoEntity (
+    key TEXT NOT NULL PRIMARY KEY,
+    url TEXT NOT NULL,
+    eventId TEXT NOT NULL,
+    shouldBeDeleted INTEGER NOT NULL CHECK (shouldBeDeleted IN (0, 1)),
+    FOREIGN KEY (eventId) REFERENCES eventEntity(id)
+);
+
+insertPhoto:
+INSERT OR REPLACE INTO photoEntity VALUES (?, ?, ?, ?);
