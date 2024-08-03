@@ -16,6 +16,12 @@ sealed interface Route {
     data class EventDetails(val eventId: String? = null) : Route
 
     @Serializable
+    data class Task(val taskId: String? = null) : Route
+
+    @Serializable
+    data class Reminder(val reminderId: String? = null) : Route
+
+    @Serializable
     data class TitleEdit(val title: String) : Route
 
     @Serializable

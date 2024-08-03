@@ -1,0 +1,13 @@
+CREATE TABLE reminderEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    time INTEGER NOT NULL,
+    remindAt INTEGER NOT NULL,
+    shouldBeDeleted INTEGER NOT NULL CHECK (shouldBeDeleted IN (0, 1)),
+    isAddedOnRemote INTEGER NOT NULL CHECK (isAddedOnRemote IN (0, 1)),
+    shouldBeUpdated INTEGER NOT NULL CHECK (shouldBeUpdated IN (0, 1))
+);
+
+insertReminder:
+INSERT OR REPLACE INTO reminderEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?);

@@ -1,7 +1,7 @@
 package com.taskyproject.tasky.data.di
 
-import com.taskyproject.tasky.data.network.LoginApi
-import com.taskyproject.tasky.data.network.LoginApiImpl
+import com.taskyproject.tasky.data.network.login.LoginApi
+import com.taskyproject.tasky.data.network.login.LoginApiImpl
 import com.taskyproject.tasky.data.repository.LoginRepositoryImpl
 import com.taskyproject.tasky.domain.repository.LoginRepository
 import dagger.Module
@@ -10,7 +10,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging

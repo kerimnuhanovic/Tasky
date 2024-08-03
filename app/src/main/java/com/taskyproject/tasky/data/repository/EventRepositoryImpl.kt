@@ -6,7 +6,7 @@ import com.taskyproject.tasky.data.local.photo.PhotoDao
 import com.taskyproject.tasky.data.mapper.toEvent
 import com.taskyproject.tasky.data.mapper.toEventAttendee
 import com.taskyproject.tasky.data.mapper.toPhoto
-import com.taskyproject.tasky.data.network.EventApi
+import com.taskyproject.tasky.data.network.event.EventApi
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.repository.EventRepository
 import java.io.File

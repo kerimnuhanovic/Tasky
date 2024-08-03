@@ -1,10 +1,9 @@
-package com.taskyproject.tasky.data.network
+package com.taskyproject.tasky.data.network.event
 
 import com.taskyproject.tasky.data.mapper.toCreateEventRequestDto
 import com.taskyproject.tasky.data.network.constants.AUTHORIZATION
 import com.taskyproject.tasky.data.network.constants.HttpRoutes
 import com.taskyproject.tasky.data.network.constants.X_API_KEY
-import com.taskyproject.tasky.data.network.dto.AttendeeDto
 import com.taskyproject.tasky.data.network.dto.EventDto
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.preferences.Preferences
@@ -15,13 +14,8 @@ import io.ktor.client.call.body
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.headers
-import io.ktor.client.request.post
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
-import io.ktor.http.headers
 import io.ktor.util.InternalAPI
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

@@ -1,13 +1,13 @@
 package com.taskyproject.tasky.data.di
 
 import com.taskyproject.Database
-import com.taskyproject.tasky.data.local.attendee.AttendeeDao
-import com.taskyproject.tasky.data.local.attendee.AttendeeDaoImpl
-import com.taskyproject.tasky.data.network.attendee.AttendeeApi
-import com.taskyproject.tasky.data.network.attendee.AttendeeApiImpl
-import com.taskyproject.tasky.data.repository.AttendeeRepositoryImpl
+import com.taskyproject.tasky.data.local.task.TaskDao
+import com.taskyproject.tasky.data.local.task.TaskDaoImpl
+import com.taskyproject.tasky.data.network.task.TaskApi
+import com.taskyproject.tasky.data.network.task.TaskApiImpl
+import com.taskyproject.tasky.data.repository.TaskRepositoryImpl
 import com.taskyproject.tasky.domain.preferences.Preferences
-import com.taskyproject.tasky.domain.repository.AttendeeRepository
+import com.taskyproject.tasky.domain.repository.TaskRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,32 +22,26 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AttendeeModule {
+object TaskModule {
 
     @Provides
     @Singleton
-    fun provideAttendeeDao(db: Database): AttendeeDao = AttendeeDaoImpl(db.attendeeEntityQueries)
+    fun provideTaskDao(db: Database): TaskDao = TaskDaoImpl(db.taskEntityQueries)
 
     @Provides
     @Singleton
-    fun provideAttendeeApi(preferences: Preferences): AttendeeApi = AttendeeApiImpl(
-        client = HttpClient(Android) {
+    fun provideTaskApi(preferences: Preferences): TaskApi =
+        TaskApiImpl(client = HttpClient(Android) {
             install(Logging) {
                 level = LogLevel.ALL
             }
             install(ContentNegotiation) {
                 json()
             }
-        },
-        preferences
-    )
+        }, preferences = preferences)
 
     @Provides
     @Singleton
-    fun provideAttendeeRepository(
-        attendeeApi: AttendeeApi,
-        attendeeDao: AttendeeDao
-    ): AttendeeRepository = AttendeeRepositoryImpl(attendeeApi, attendeeDao)
-
-
+    fun provideTaskRepository(taskDao: TaskDao, taskApi: TaskApi): TaskRepository =
+        TaskRepositoryImpl(taskDao, taskApi)
 }

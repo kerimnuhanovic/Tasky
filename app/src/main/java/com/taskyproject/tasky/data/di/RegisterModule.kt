@@ -1,7 +1,7 @@
 package com.taskyproject.tasky.data.di
 
-import com.taskyproject.tasky.data.network.RegisterApi
-import com.taskyproject.tasky.data.network.RegisterApiImpl
+import com.taskyproject.tasky.data.network.register.RegisterApi
+import com.taskyproject.tasky.data.network.register.RegisterApiImpl
 import com.taskyproject.tasky.data.repository.RegisterRepositoryImpl
 import com.taskyproject.tasky.domain.repository.RegisterRepository
 import dagger.Module

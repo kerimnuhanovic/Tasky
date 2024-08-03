@@ -185,7 +185,6 @@ class EventDetailsViewModel @Inject constructor(
     }
 
     private fun createEvent() {
-        println("USAO")
         val eventId = UUID.randomUUID().toString()
         viewModelScope.launch {
             val event = prepareEventRequest(

@@ -1,4 +1,4 @@
-package com.taskyproject.tasky.data.network
+package com.taskyproject.tasky.data.network.register
 
 import com.taskyproject.tasky.data.network.dto.RegisterData
 

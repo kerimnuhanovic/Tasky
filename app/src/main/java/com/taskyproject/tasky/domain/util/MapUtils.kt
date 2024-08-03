@@ -3,6 +3,8 @@ package com.taskyproject.tasky.domain.util
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.model.EventAttendee
 import com.taskyproject.tasky.domain.model.Photo
+import com.taskyproject.tasky.domain.model.Reminder
+import com.taskyproject.tasky.domain.model.Task
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -43,6 +45,40 @@ fun prepareEventRequest(
             )
         },
         photos = photos
+    )
+}
 
+fun prepareTaskRequest(
+    id: String,
+    title: String,
+    description: String,
+    time: LocalTime,
+    date: LocalDate,
+    remindBefore: String
+): Task {
+    return Task(
+        id = id,
+        title = title,
+        description = description,
+        time = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        isDone = false
+    )
+}
+
+fun prepareReminderRequest(
+    id: String,
+    title: String,
+    description: String,
+    time: LocalTime,
+    date: LocalDate,
+    remindBefore: String
+): Reminder {
+    return Reminder(
+        id = id,
+        title = title,
+        description = description,
+        time = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli()
     )
 }

@@ -1,0 +1,14 @@
+CREATE TABLE taskEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    time INTEGER NOT NULL,
+    remindAt INTEGER NOT NULL,
+    isDone INTEGER NOT NULL CHECK (isDone IN (0, 1)),
+    shouldBeDeleted INTEGER NOT NULL CHECK (shouldBeDeleted IN (0, 1)),
+    isAddedOnRemote INTEGER NOT NULL CHECK (isAddedOnRemote IN (0, 1)),
+    shouldBeUpdated INTEGER NOT NULL CHECK (shouldBeUpdated IN (0, 1))
+);
+
+insertTask:
+INSERT OR REPLACE INTO taskEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
