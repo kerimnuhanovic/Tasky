@@ -1,13 +1,13 @@
 package com.taskyproject.tasky.data.di
 
 import com.taskyproject.Database
-import com.taskyproject.tasky.data.local.attendee.AttendeeDao
-import com.taskyproject.tasky.data.local.attendee.AttendeeDaoImpl
-import com.taskyproject.tasky.data.network.attendee.AttendeeApi
-import com.taskyproject.tasky.data.network.attendee.AttendeeApiImpl
-import com.taskyproject.tasky.data.repository.AttendeeRepositoryImpl
+import com.taskyproject.tasky.data.local.reminder.ReminderDao
+import com.taskyproject.tasky.data.local.reminder.ReminderDaoImpl
+import com.taskyproject.tasky.data.network.reminder.ReminderApi
+import com.taskyproject.tasky.data.network.reminder.ReminderApiImpl
+import com.taskyproject.tasky.data.repository.ReminderRepositoryImpl
 import com.taskyproject.tasky.domain.preferences.Preferences
-import com.taskyproject.tasky.domain.repository.AttendeeRepository
+import com.taskyproject.tasky.domain.repository.ReminderRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,15 +22,15 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AttendeeModule {
+object ReminderModule {
 
     @Provides
     @Singleton
-    fun provideAttendeeDao(db: Database): AttendeeDao = AttendeeDaoImpl(db.attendeeEntityQueries)
+    fun provideReminderDao(db: Database): ReminderDao = ReminderDaoImpl(db.reminderEntityQueries)
 
     @Provides
     @Singleton
-    fun provideAttendeeApi(preferences: Preferences): AttendeeApi = AttendeeApiImpl(
+    fun provideReminderApi(preferences: Preferences): ReminderApi = ReminderApiImpl(
         client = HttpClient(Android) {
             install(Logging) {
                 level = LogLevel.ALL
@@ -39,15 +39,16 @@ object AttendeeModule {
                 json()
             }
         },
-        preferences
+        preferences = preferences
     )
 
     @Provides
     @Singleton
-    fun provideAttendeeRepository(
-        attendeeApi: AttendeeApi,
-        attendeeDao: AttendeeDao
-    ): AttendeeRepository = AttendeeRepositoryImpl(attendeeApi, attendeeDao)
-
-
+    fun provideReminderRepository(
+        reminderDao: ReminderDao,
+        reminderApi: ReminderApi
+    ): ReminderRepository = ReminderRepositoryImpl(
+        reminderDao = reminderDao,
+        reminderApi = reminderApi
+    )
 }

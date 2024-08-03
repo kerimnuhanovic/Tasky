@@ -1,7 +1,7 @@
 package com.taskyproject.tasky.data.repository
 
 import com.taskyproject.tasky.data.mapper.toLoginResponse
-import com.taskyproject.tasky.data.network.LoginApi
+import com.taskyproject.tasky.data.network.login.LoginApi
 import com.taskyproject.tasky.data.network.dto.Credentials
 import com.taskyproject.tasky.domain.model.LoginResponse
 import com.taskyproject.tasky.domain.repository.LoginRepository

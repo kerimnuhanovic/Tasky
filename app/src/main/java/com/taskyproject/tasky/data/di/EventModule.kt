@@ -5,8 +5,8 @@ import com.taskyproject.tasky.data.local.event.EventDao
 import com.taskyproject.tasky.data.local.event.EventDaoImpl
 import com.taskyproject.tasky.data.local.eventattendee.EventAttendeeDao
 import com.taskyproject.tasky.data.local.photo.PhotoDao
-import com.taskyproject.tasky.data.network.EventApi
-import com.taskyproject.tasky.data.network.EventApiImpl
+import com.taskyproject.tasky.data.network.event.EventApi
+import com.taskyproject.tasky.data.network.event.EventApiImpl
 import com.taskyproject.tasky.data.repository.EventRepositoryImpl
 import com.taskyproject.tasky.domain.preferences.Preferences
 import com.taskyproject.tasky.domain.repository.EventRepository

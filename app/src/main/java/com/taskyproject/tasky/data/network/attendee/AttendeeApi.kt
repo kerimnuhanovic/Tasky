@@ -1,4 +1,4 @@
-package com.taskyproject.tasky.data.network
+package com.taskyproject.tasky.data.network.attendee
 
 import com.taskyproject.tasky.data.network.dto.AttendeeDto
 

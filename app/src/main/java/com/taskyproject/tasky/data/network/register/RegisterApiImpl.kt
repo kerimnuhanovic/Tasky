@@ -1,12 +1,9 @@
-package com.taskyproject.tasky.data.network
+package com.taskyproject.tasky.data.network.register
 
 import com.taskyproject.tasky.data.network.constants.HttpRoutes
 import com.taskyproject.tasky.data.network.constants.X_API_KEY
-import com.taskyproject.tasky.data.network.dto.Credentials
-import com.taskyproject.tasky.data.network.dto.LoginResponseDto
+import com.taskyproject.tasky.data.network.dto.RegisterData
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -15,19 +12,18 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import javax.inject.Inject
 
-class LoginApiImpl @Inject constructor(
+class RegisterApiImpl @Inject constructor(
     private val client: HttpClient
-): LoginApi {
-    override suspend fun login(credentials: Credentials): LoginResponseDto {
-        val response = client.post {
-            url(HttpRoutes.LOGIN)
+) : RegisterApi {
+    override suspend fun register(registerData: RegisterData) {
+        client.post {
+            url(HttpRoutes.REGISTER)
             contentType(ContentType.Application.Json)
             headers {
                 append(X_API_KEY, "619417673")
             }
-            setBody(credentials)
+            setBody(registerData)
 
         }
-        return response.body<LoginResponseDto>()
     }
 }

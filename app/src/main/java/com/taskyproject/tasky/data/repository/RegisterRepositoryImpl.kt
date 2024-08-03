@@ -1,6 +1,6 @@
 package com.taskyproject.tasky.data.repository
 
-import com.taskyproject.tasky.data.network.RegisterApi
+import com.taskyproject.tasky.data.network.register.RegisterApi
 import com.taskyproject.tasky.data.network.dto.RegisterData
 import com.taskyproject.tasky.domain.repository.RegisterRepository
 import com.taskyproject.tasky.domain.util.Result

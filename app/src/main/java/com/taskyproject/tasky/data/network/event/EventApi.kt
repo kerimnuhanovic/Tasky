@@ -1,4 +1,4 @@
-package com.taskyproject.tasky.data.network
+package com.taskyproject.tasky.data.network.event
 
 import com.taskyproject.tasky.data.network.dto.EventDto
 import com.taskyproject.tasky.domain.model.Event

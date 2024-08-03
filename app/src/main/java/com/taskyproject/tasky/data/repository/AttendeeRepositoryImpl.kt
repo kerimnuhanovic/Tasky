@@ -3,7 +3,7 @@ package com.taskyproject.tasky.data.repository
 import com.taskyproject.tasky.R
 import com.taskyproject.tasky.data.local.attendee.AttendeeDao
 import com.taskyproject.tasky.data.mapper.toAttendee
-import com.taskyproject.tasky.data.network.AttendeeApi
+import com.taskyproject.tasky.data.network.attendee.AttendeeApi
 import com.taskyproject.tasky.domain.model.Attendee
 import com.taskyproject.tasky.domain.repository.AttendeeRepository
 import com.taskyproject.tasky.domain.util.Result

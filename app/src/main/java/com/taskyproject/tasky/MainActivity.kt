@@ -22,6 +22,8 @@ import com.taskyproject.tasky.navigation.navigateBackWithResult
 import com.taskyproject.tasky.presentation.descriptionedit.DescriptionEditScreen
 import com.taskyproject.tasky.presentation.eventdetails.EventDetailsScreen
 import com.taskyproject.tasky.presentation.register.RegisterScreen
+import com.taskyproject.tasky.presentation.reminder.ReminderScreen
+import com.taskyproject.tasky.presentation.task.TaskScreen
 import com.taskyproject.tasky.presentation.titleedit.TitleEditScreen
 import com.taskyproject.tasky.presentation.util.DESCRIPTION_KEY
 import com.taskyproject.tasky.presentation.util.TITLE_KEY
@@ -57,6 +59,24 @@ class MainActivity : ComponentActivity() {
                         val title = it.savedStateHandle.getStateFlow(TITLE_KEY, null)
                         val description = it.savedStateHandle.getStateFlow(DESCRIPTION_KEY, null)
                         EventDetailsScreen(
+                            onNavigate = navController::navigate,
+                            title = title,
+                            description = description
+                        )
+                    }
+                    composable<Route.Task> {
+                        val title = it.savedStateHandle.getStateFlow(TITLE_KEY, null)
+                        val description = it.savedStateHandle.getStateFlow(DESCRIPTION_KEY, null)
+                        TaskScreen(
+                            onNavigate = navController::navigate,
+                            title = title,
+                            description = description
+                        )
+                    }
+                    composable<Route.Reminder> {
+                        val title = it.savedStateHandle.getStateFlow(TITLE_KEY, null)
+                        val description = it.savedStateHandle.getStateFlow(DESCRIPTION_KEY, null)
+                        ReminderScreen(
                             onNavigate = navController::navigate,
                             title = title,
                             description = description
