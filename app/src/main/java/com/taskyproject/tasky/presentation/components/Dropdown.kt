@@ -14,16 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.ui.theme.TaskyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Dropdown(
     isExpanded: Boolean,
-    selectedItem: Option,
-    options: List<Option>,
+    selectedItem: TimeOption,
+    options: List<TimeOption>,
     onExpandChange: () -> Unit,
-    onItemSelect: (Option) -> Unit,
+    onItemSelect: (TimeOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ExposedDropdownMenuBox(
@@ -72,12 +73,8 @@ private fun DropdownPreview() {
     TaskyTheme {
         Dropdown(
             isExpanded = true,
-            selectedItem = Option("30", "30 minutes before"),
-            options = listOf(
-                Option("Option 1", "Option 1"),
-                Option("Option 2", "Option 2"),
-                Option("Option 3", "Option 3")
-            ),
+            selectedItem = TimeOption.ThirtyMinutesBefore,
+            options = TimeOption.listTimeOptions(),
             onExpandChange = {},
             onItemSelect = {}
         )

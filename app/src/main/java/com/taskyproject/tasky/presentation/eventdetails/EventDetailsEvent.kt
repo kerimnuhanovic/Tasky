@@ -2,12 +2,13 @@ package com.taskyproject.tasky.presentation.eventdetails
 
 import android.net.Uri
 import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.domain.model.VisitorOption
 
 sealed interface EventDetailsEvent {
     data class OnEventPhotosSelect(val photos: List<Uri>) : EventDetailsEvent
     data object OnReminderDropdownStateChange : EventDetailsEvent
-    data class OnReminderOptionSelect(val option: Option) : EventDetailsEvent
+    data class OnReminderOptionSelect(val option: TimeOption) : EventDetailsEvent
     data class OnVisitorOptionChange(val option: VisitorOption) : EventDetailsEvent
     data object OnEditClick : EventDetailsEvent
     data object OnCloseEditClick : EventDetailsEvent

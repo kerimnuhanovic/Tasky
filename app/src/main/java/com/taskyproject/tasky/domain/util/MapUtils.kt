@@ -8,8 +8,7 @@ import com.taskyproject.tasky.domain.model.Task
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
-import java.util.UUID
+import java.time.ZoneId
 
 fun prepareEventRequest(
     id: String,
@@ -28,10 +27,13 @@ fun prepareEventRequest(
         id = id,
         title = title,
         description = description,
-        from = LocalDateTime.of(fromDate, fromTime).toInstant(ZoneOffset.UTC).toEpochMilli(),
-        to = LocalDateTime.of(toDate, toTime).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        from = LocalDateTime.of(fromDate, fromTime).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli(),
+        to = LocalDateTime.of(toDate, toTime).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli(),
         host = host,
-        remindAt = LocalDateTime.of(toDate, toTime).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        remindAt = LocalDateTime.of(toDate, toTime).minusMinutes(remindBefore.toLong())
+            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
         isUserEventCreator = true,
         attendees = attendees.map { attendee ->
             EventAttendee(
@@ -40,7 +42,8 @@ fun prepareEventRequest(
                 userId = attendee.userId,
                 eventId = id,
                 isGoing = true,
-                remindAt = LocalDateTime.of(toDate, toTime).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli(),
+                remindAt = LocalDateTime.of(toDate, toTime).minusMinutes(remindBefore.toLong())
+                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                 createdAt = attendee.createdAt
             )
         },
@@ -60,8 +63,10 @@ fun prepareTaskRequest(
         id = id,
         title = title,
         description = description,
-        time = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC).toEpochMilli(),
-        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        time = LocalDateTime.of(date, time).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli(),
+        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong())
+            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
         isDone = false
     )
 }
@@ -78,7 +83,9 @@ fun prepareReminderRequest(
         id = id,
         title = title,
         description = description,
-        time = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC).toEpochMilli(),
-        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli()
+        time = LocalDateTime.of(date, time).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli(),
+        remindAt = LocalDateTime.of(date, time).minusMinutes(remindBefore.toLong())
+            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     )
 }

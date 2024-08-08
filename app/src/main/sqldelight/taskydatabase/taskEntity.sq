@@ -12,3 +12,9 @@ CREATE TABLE taskEntity (
 
 insertTask:
 INSERT OR REPLACE INTO taskEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+getTask:
+SELECT * FROM taskEntity WHERE id = ?;
+
+updateReminder:
+UPDATE taskEntity SET title = ?, description = ?, time = ?, remindAt = ?, isDone = ?, shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;

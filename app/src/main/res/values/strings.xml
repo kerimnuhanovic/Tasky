@@ -39,6 +39,8 @@
     <string name="task">Task</string>
     <string name="at">At</string>
     <string name="task_created">Task has been successfully created</string>
+    <string name="task_updated">Task has been successfully updated</string>
     <string name="reminder">Reminder</string>
     <string name="reminder_created">Reminder has been successfully created</string>
+    <string name="reminder_updated">Reminder has been successfully updated</string>
 </resources>
