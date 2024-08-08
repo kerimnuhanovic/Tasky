@@ -4,13 +4,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.domain.usecase.CreateReminderUseCase
+import com.taskyproject.tasky.domain.usecase.GetReminderUseCase
+import com.taskyproject.tasky.domain.usecase.UpdateReminderUseCase
 import com.taskyproject.tasky.domain.util.Result
 import com.taskyproject.tasky.domain.util.prepareReminderRequest
 import com.taskyproject.tasky.navigation.Route
 import com.taskyproject.tasky.presentation.util.ToastMessage
 import com.taskyproject.tasky.presentation.util.UiEvent
+import com.taskyproject.tasky.presentation.util.differenceInMinutes
 import com.taskyproject.tasky.presentation.util.millisToLocalDate
+import com.taskyproject.tasky.presentation.util.millisToLocalTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +30,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ReminderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val createReminderUseCase: CreateReminderUseCase
+    private val createReminderUseCase: CreateReminderUseCase,
+    private val getReminderUseCase: GetReminderUseCase,
+    private val updateReminderUseCase: UpdateReminderUseCase
 ) : ViewModel() {
     private val reminderId = savedStateHandle.toRoute<Route.Reminder>().reminderId
 
@@ -34,6 +41,10 @@ class ReminderViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        getReminder()
+    }
 
     fun onEvent(event: ReminderEvent) {
         when (event) {
@@ -85,7 +96,7 @@ class ReminderViewModel @Inject constructor(
                 )
             }
             ReminderEvent.OnSaveClick -> {
-                createReminder()
+                createOrUpdateReminder()
             }
             is ReminderEvent.OnTimeSelect -> {
                 _state.value = state.value.copy(
@@ -107,23 +118,66 @@ class ReminderViewModel @Inject constructor(
         }
     }
 
-    private fun createReminder() {
-        val reminderId = UUID.randomUUID().toString()
-        val newReminder = prepareReminderRequest(
-            id = reminderId,
-            title = state.value.title,
-            description = state.value.description,
-            time = state.value.time,
-            date = state.value.date,
-            remindBefore = state.value.selectedReminderOption.value
-        )
-        viewModelScope.launch(Dispatchers.IO) {
-            when(val result = createReminderUseCase(newReminder)) {
-                is Result.Success -> {
-                    _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderCreated))
+    private fun getReminder() {
+        viewModelScope.launch {
+            reminderId?.let {
+                val reminder = getReminderUseCase(it)
+                _state.value = state.value.copy(
+                    isCreateOperation = false,
+                    title = reminder.title,
+                    description = reminder.description,
+                    time = millisToLocalTime(reminder.time),
+                    date = millisToLocalDate(reminder.time),
+                    selectedReminderOption = TimeOption.fromTime(differenceInMinutes(reminder.time, reminder.remindAt).toString())
+                )
+            }
+        }
+    }
+
+    private fun createOrUpdateReminder() {
+        if (state.value.isCreateOperation) {
+            val reminderId = UUID.randomUUID().toString()
+            val newReminder = prepareReminderRequest(
+                id = reminderId,
+                title = state.value.title,
+                description = state.value.description,
+                time = state.value.time,
+                date = state.value.date,
+                remindBefore = state.value.selectedReminderOption.value
+            )
+            viewModelScope.launch(Dispatchers.IO) {
+                when(val result = createReminderUseCase(newReminder)) {
+                    is Result.Success -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderCreated))
+                        _state.value = state.value.copy(
+                            isEditable = false
+                        )
+                    }
+                    is Result.Failure -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderCreationFailed(result.errorMessageId)))
+                    }
                 }
-                is Result.Failure -> {
-                    _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderCreationFailed(result.errorMessageId)))
+            }
+        } else {
+            val reminder = prepareReminderRequest(
+                id = reminderId!!,
+                title = state.value.title,
+                description = state.value.description,
+                time = state.value.time,
+                date = state.value.date,
+                remindBefore = state.value.selectedReminderOption.value
+            )
+            viewModelScope.launch {
+                when (val result = updateReminderUseCase(reminder)) {
+                    is Result.Success -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderUpdated))
+                        _state.value = state.value.copy(
+                            isEditable = false
+                        )
+                    }
+                    is Result.Failure -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderUpdateFailed(result.errorMessageId)))
+                    }
                 }
             }
         }

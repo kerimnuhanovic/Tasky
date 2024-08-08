@@ -1,6 +1,7 @@
 package com.taskyproject.tasky.presentation.task
 
 import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.TimeOption
 
 sealed interface TaskEvent {
     data object OnCloseEditClick : TaskEvent
@@ -13,7 +14,7 @@ sealed interface TaskEvent {
     data object OnEditTimeClick : TaskEvent
     data object OnEditDateClick : TaskEvent
     data object OnReminderDropdownStateChange : TaskEvent
-    data class OnReminderOptionSelect(val option: Option) : TaskEvent
+    data class OnReminderOptionSelect(val option: TimeOption) : TaskEvent
     data class OnTitleChange(val title: String) : TaskEvent
     data class OnDescriptionChange(val description: String) : TaskEvent
 }

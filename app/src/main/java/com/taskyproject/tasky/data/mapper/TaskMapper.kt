@@ -2,6 +2,7 @@ package com.taskyproject.tasky.data.mapper
 
 import com.taskyproject.tasky.data.network.dto.TaskDto
 import com.taskyproject.tasky.domain.model.Task
+import taskydatabase.TaskEntity
 
 fun TaskDto.toTask(): Task {
     return Task(
@@ -22,5 +23,16 @@ fun Task.toTaskDto(): TaskDto {
         time = time,
         remindAt = remindAt,
         isDone = isDone
+    )
+}
+
+fun TaskEntity.toTask(): Task {
+    return Task(
+        id = id,
+        title = title,
+        description = description,
+        time = time,
+        remindAt = remindAt,
+        isDone = isDone == 1L
     )
 }

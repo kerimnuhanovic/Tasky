@@ -9,6 +9,10 @@ sealed class ToastMessage(val valueId: Int) {
     data class EventCreationFailed(val messageId: Int) : ToastMessage(messageId)
     data object TaskCreated : ToastMessage(R.string.task_created)
     data class TaskCreationFailed(val messageId: Int) : ToastMessage(messageId)
+    data object TaskUpdated : ToastMessage(R.string.reminder_updated)
+    data class TaskUpdateFailed(val messageId: Int) : ToastMessage(messageId)
     data object ReminderCreated : ToastMessage(R.string.reminder_created)
     data class ReminderCreationFailed(val messageId: Int) : ToastMessage(messageId)
+    data object ReminderUpdated : ToastMessage(R.string.reminder_updated)
+    data class ReminderUpdateFailed(val messageId: Int) : ToastMessage(messageId)
 }

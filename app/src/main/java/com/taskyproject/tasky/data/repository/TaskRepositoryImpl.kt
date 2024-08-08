@@ -26,4 +26,28 @@ class TaskRepositoryImpl @Inject constructor(
             handleApiError(ex)
         }
     }
+
+    override suspend fun getTask(id: String): Task {
+        return taskDao.getTask(id).toTask()
+    }
+
+    override suspend fun updateTask(task: Task): Result<Task> {
+        return try {
+            val reminderDocument = taskDao.getTask(task.id)
+            taskDao.updateTask(
+                task = task,
+                isAddedOnRemote = reminderDocument.isAddedOnRemote == 1L,
+                shouldBeUpdated = true
+            )
+            if (reminderDocument.isAddedOnRemote == 1L) {
+                taskApi.updateTask(task)
+                taskDao.updateTask(task, isAddedOnRemote = true, shouldBeUpdated = false)
+            }
+            Result.Success(task)
+        } catch (ex: UnknownHostException) {
+            Result.Success(task)
+        } catch (ex: Exception) {
+            handleApiError(ex)
+        }
+    }
 }

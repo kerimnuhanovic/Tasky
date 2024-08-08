@@ -1,6 +1,7 @@
 package com.taskyproject.tasky.presentation.reminder
 
 import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.presentation.task.TaskEvent
 
 sealed interface ReminderEvent {
@@ -14,7 +15,7 @@ sealed interface ReminderEvent {
     data object OnEditTimeClick : ReminderEvent
     data object OnEditDateClick : ReminderEvent
     data object OnReminderDropdownStateChange : ReminderEvent
-    data class OnReminderOptionSelect(val option: Option) : ReminderEvent
+    data class OnReminderOptionSelect(val option: TimeOption) : ReminderEvent
     data class OnTitleChange(val title: String) : ReminderEvent
     data class OnDescriptionChange(val description: String) : ReminderEvent
 }

@@ -11,3 +11,9 @@ CREATE TABLE reminderEntity (
 
 insertReminder:
 INSERT OR REPLACE INTO reminderEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+getReminder:
+SELECT * FROM reminderEntity WHERE id = ?;
+
+updateReminder:
+UPDATE reminderEntity SET title = ?, description = ?, time = ?, remindAt = ?, shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;
