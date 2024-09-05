@@ -61,6 +61,7 @@ import com.taskyproject.tasky.domain.model.VisitorOption
 import com.taskyproject.tasky.presentation.components.AddVisitorDialog
 import com.taskyproject.tasky.presentation.components.DatePickerWithDialog
 import com.taskyproject.tasky.presentation.components.Dropdown
+import com.taskyproject.tasky.presentation.components.ImageBox
 import com.taskyproject.tasky.presentation.components.TimePickerWithDialog
 import com.taskyproject.tasky.presentation.components.VisitorCard
 import com.taskyproject.tasky.presentation.components.VisitorsWidget
@@ -159,9 +160,11 @@ private fun EventDetailsScreenContent(
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
-                            modifier = Modifier.padding(end = dimensions.size16).clickable {
-                                onEvent(EventDetailsEvent.OnSaveClick)
-                            }
+                            modifier = Modifier
+                                .padding(end = dimensions.size16)
+                                .clickable {
+                                    onEvent(EventDetailsEvent.OnSaveClick)
+                                }
                         )
                     } else {
                         Icon(
@@ -367,18 +370,7 @@ private fun EventDetailsScreenContent(
                         ) {
                             state.eventPhotos.forEach { image ->
                                 Column {
-                                    Image(
-                                        modifier = Modifier
-                                            .height(dimensions.size60)
-                                            .width(dimensions.size60)
-                                            .border(
-                                                width = dimensions.size2,
-                                                color = LightBlue
-                                            ),
-                                        painter = rememberAsyncImagePainter(model = image),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop
-                                    )
+                                    ImageBox(onExitClick = { onEvent(EventDetailsEvent.OnDeletePhotoClick(image)) }, image = image)
                                     Spacer(modifier = Modifier.height(dimensions.size8))
                                 }
                             }
@@ -651,7 +643,9 @@ private fun EventDetailsScreenContent(
                 )
                 state.attendees.forEach { eventAttendee ->
                     if (eventAttendee.isGoing) {
-                        VisitorCard(fullName = eventAttendee.fullName, isCreator = false)
+                        VisitorCard(fullName = eventAttendee.fullName, isCreator = state.host == eventAttendee.userId, onDeleteClick = {
+                            onEvent(EventDetailsEvent.OnAttendeeDeleteClick(eventAttendee))
+                        })
                     }
                 }
             }

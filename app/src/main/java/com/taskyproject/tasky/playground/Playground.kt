@@ -11,4 +11,5 @@ import java.time.format.DateTimeFormatter
 fun main() {
     val instant = Instant.ofEpochMilli(1723748400000)
     println(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime())
+    println(System.currentTimeMillis())
 }

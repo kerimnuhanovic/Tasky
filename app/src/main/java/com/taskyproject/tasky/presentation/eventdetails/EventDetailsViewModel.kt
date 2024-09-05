@@ -1,27 +1,33 @@
 package com.taskyproject.tasky.presentation.eventdetails
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.taskyproject.tasky.R
 import com.taskyproject.tasky.domain.model.EventAttendee
 import com.taskyproject.tasky.domain.model.Photo
+import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.domain.preferences.Preferences
+import com.taskyproject.tasky.domain.usecase.CheckIsImageLargerThanOneMBUseCase
 import com.taskyproject.tasky.domain.usecase.CreateEventUseCase
 import com.taskyproject.tasky.domain.usecase.CreateFileFromUriUseCase
 import com.taskyproject.tasky.domain.usecase.GetAttendeeUseCase
+import com.taskyproject.tasky.domain.usecase.GetEventUseCase
+import com.taskyproject.tasky.domain.usecase.UpdateEventUseCase
 import com.taskyproject.tasky.domain.util.Result
 import com.taskyproject.tasky.domain.util.prepareEventRequest
 import com.taskyproject.tasky.navigation.Route
-import com.taskyproject.tasky.presentation.util.TITLE_KEY
 import com.taskyproject.tasky.presentation.util.ToastMessage
 import com.taskyproject.tasky.presentation.util.UiEvent
+import com.taskyproject.tasky.presentation.util.differenceInMinutes
 import com.taskyproject.tasky.presentation.util.millisToLocalDate
+import com.taskyproject.tasky.presentation.util.millisToLocalTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -35,7 +41,10 @@ class EventDetailsViewModel @Inject constructor(
     private val getAttendeeUseCase: GetAttendeeUseCase,
     private val createEventUseCase: CreateEventUseCase,
     private val preferences: Preferences,
-    private val createFileFromUriUseCase: CreateFileFromUriUseCase
+    private val createFileFromUriUseCase: CreateFileFromUriUseCase,
+    private val getEventUseCase: GetEventUseCase,
+    private val checkIsImageLargerThanOneMBUseCase: CheckIsImageLargerThanOneMBUseCase,
+    private val updateEventUseCase: UpdateEventUseCase
 ) : ViewModel() {
     private val eventId = savedStateHandle.toRoute<Route.EventDetails>().eventId
 
@@ -46,6 +55,10 @@ class EventDetailsViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        getEvent()
+    }
 
     fun onEvent(event: EventDetailsEvent) {
         when (event) {
@@ -90,7 +103,7 @@ class EventDetailsViewModel @Inject constructor(
             }
 
             EventDetailsEvent.OnSaveClick -> {
-                createEvent()
+                createOrUpdateEvent()
             }
 
             EventDetailsEvent.OnEditTitleClick -> {
@@ -123,17 +136,20 @@ class EventDetailsViewModel @Inject constructor(
                     isStartDatePickerOpened = false
                 )
             }
+
             is EventDetailsEvent.OnEndDateSelect -> {
                 _state.value = state.value.copy(
                     toDate = millisToLocalDate(event.millis),
                     isEndDatePickerOpened = false
                 )
             }
+
             EventDetailsEvent.OnStartDateClick -> {
                 _state.value = state.value.copy(
                     isStartDatePickerOpened = true
                 )
             }
+
             EventDetailsEvent.OnEndDateClick -> {
                 _state.value = state.value.copy(
                     isEndDatePickerOpened = true
@@ -145,17 +161,20 @@ class EventDetailsViewModel @Inject constructor(
                     isEndTimePickerOpened = true
                 )
             }
+
             is EventDetailsEvent.OnEndTimeSelect -> {
                 _state.value = state.value.copy(
                     toTime = LocalTime.of(event.hours, event.minutes),
                     isEndTimePickerOpened = false
                 )
             }
+
             EventDetailsEvent.OnStartTimeClick -> {
                 _state.value = state.value.copy(
                     isStartTimePickerOpened = true
                 )
             }
+
             is EventDetailsEvent.OnStartTimeSelect -> {
                 _state.value = state.value.copy(
                     fromTime = LocalTime.of(event.hours, event.minutes),
@@ -166,55 +185,143 @@ class EventDetailsViewModel @Inject constructor(
             EventDetailsEvent.OnAddVisitorClick -> {
                 getAttendee()
             }
+
             EventDetailsEvent.OnVisitorDialogCloseClick -> {
                 _state.value = state.value.copy(
                     isVisitorDialogOpened = false
                 )
             }
+
             EventDetailsEvent.OnVisitorDialogOpenClick -> {
                 _state.value = state.value.copy(
                     isVisitorDialogOpened = true
                 )
             }
+
             is EventDetailsEvent.OnVisitorEmailEnter -> {
                 _state.value = state.value.copy(
                     visitorEmail = event.email
                 )
             }
+
+            is EventDetailsEvent.OnAttendeeDeleteClick -> {
+                val attendeeToDelete = state.value.initialEventAttendees.find {
+                    event.attendee == it
+                }
+                _state.value = state.value.copy(
+                    attendeesToDelete = if (attendeeToDelete != null) state.value.attendeesToDelete.plus(event.attendee) else state.value.attendeesToDelete,
+                    attendees = state.value.attendees.minus(event.attendee)
+                )
+            }
+
+            is EventDetailsEvent.OnDeletePhotoClick -> {
+                val photoToDelete = state.value.initialPhotos.find {
+                    event.photo == Uri.parse(it.url)
+                }
+                _state.value = state.value.copy(
+                    eventPhotos = state.value.eventPhotos.minus(event.photo),
+                    photosToDelete = if (photoToDelete != null) state.value.photosToDelete.plus(photoToDelete) else state.value.photosToDelete
+                )
+            }
         }
     }
 
-    private fun createEvent() {
-        val eventId = UUID.randomUUID().toString()
-        viewModelScope.launch {
-            val event = prepareEventRequest(
-                id = eventId,
-                title = state.value.title,
-                description = state.value.description,
-                fromTime = state.value.fromTime,
-                fromDate = state.value.fromDate,
-                toTime = state.value.toTime,
-                toDate = state.value.toDate,
-                host = preferences.readUserId()!!,
-                remindBefore = state.value.selectedReminderOption.value,
-                attendees = state.value.attendees,
-                photos = state.value.eventPhotos.map { photo ->
-                    Photo(
-                        key = "",
-                        url = photo.toString(),
-                        eventId = eventId
-                    )
+    private fun createOrUpdateEvent() {
+        if (state.value.isCreateOperation) {
+            val eventId = UUID.randomUUID().toString()
+            viewModelScope.launch {
+                val event = prepareEventRequest(
+                    id = eventId,
+                    title = state.value.title,
+                    description = state.value.description,
+                    fromTime = state.value.fromTime,
+                    fromDate = state.value.fromDate,
+                    toTime = state.value.toTime,
+                    toDate = state.value.toDate,
+                    host = preferences.readUserId()!!,
+                    remindBefore = state.value.selectedReminderOption.value,
+                    attendees = state.value.attendees,
+                    photos = state.value.eventPhotos.map { photo ->
+                        Photo(
+                            key = "",
+                            url = photo.toString(),
+                            eventId = eventId
+                        )
+                    }
+                )
+                val allPhotos = state.value.eventPhotos.map { photo ->
+                    createFileFromUriUseCase(photo)
                 }
-            )
-            val photos = state.value.eventPhotos.map { photo ->
-                createFileFromUriUseCase(photo)
+                val photos = allPhotos.filter {
+                    !checkIsImageLargerThanOneMBUseCase(it.length())
+                }
+                when (val result = createEventUseCase(event, photos)) {
+                    is Result.Success -> {
+                        val messageId =
+                            if (photos.size == allPhotos.size) R.string.event_created else R.string.event_created_with_images_skipped
+                        _state.value = state.value.copy(
+                            eventPhotos = event.photos.map { photo ->
+                                Uri.parse(photo.url)
+                            }
+                        )
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventCreated(messageId)))
+                    }
+
+                    is Result.Failure -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventCreationFailed(result.errorMessageId)))
+                    }
+                }
             }
-            when (val result = createEventUseCase(event, photos)) {
-                is Result.Success -> {
-                    _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventCreated))
+        } else {
+            viewModelScope.launch {
+                val event = prepareEventRequest(
+                    id = eventId!!,
+                    title = state.value.title,
+                    description = state.value.description,
+                    fromTime = state.value.fromTime,
+                    fromDate = state.value.fromDate,
+                    toTime = state.value.toTime,
+                    toDate = state.value.toDate,
+                    host = preferences.readUserId()!!,
+                    remindBefore = state.value.selectedReminderOption.value,
+                    attendees = state.value.attendees,
+                    photos = state.value.eventPhotos.map { photo ->
+                        Photo(
+                            key = "",
+                            url = photo.toString(),
+                            eventId = eventId
+                        )
+                    }
+                )
+                val allPhotos = state.value.eventPhotos.map { photo ->
+                    createFileFromUriUseCase(photo)
                 }
-                is Result.Failure -> {
-                    _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventCreationFailed(result.errorMessageId)))
+                val photos = allPhotos.filter {
+                    !checkIsImageLargerThanOneMBUseCase(it.length())
+                }
+                when (val result = updateEventUseCase(
+                    event = event,
+                    photos = photos,
+                    deletedAttendees = state.value.attendeesToDelete,
+                    deletedPhotos = state.value.photosToDelete
+                )) {
+                    is Result.Success -> {
+                        val messageId =
+                            if (photos.size == allPhotos.size) R.string.event_updated else R.string.event_updated_with_images_skipped
+                        _state.value = state.value.copy(
+                            eventPhotos = event.photos.map { photo ->
+                                Uri.parse(photo.url)
+                            },
+                            photosToDelete = emptyList(),
+                            attendeesToDelete = emptyList(),
+                            isEditable = false
+                        )
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventUpdated(messageId)))
+                    }
+
+                    is Result.Failure -> {
+                        _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventUpdateFailed(result.errorMessageId)))
+                    }
                 }
             }
         }
@@ -244,12 +351,43 @@ class EventDetailsViewModel @Inject constructor(
                         attendees = state.value.attendees + eventAttendee
                     )
                 }
+
                 is Result.Failure -> {
                     _state.value = state.value.copy(
                         isVisitorAdditionInProgress = false,
                         visitorErrorMessageId = result.errorMessageId
                     )
                 }
+            }
+        }
+    }
+
+    private fun getEvent() {
+        viewModelScope.launch {
+            eventId?.let {
+                val event = getEventUseCase(it)
+                _state.value = state.value.copy(
+                    isCreateOperation = false,
+                    title = event.title,
+                    description = event.description,
+                    fromTime = millisToLocalTime(event.from),
+                    fromDate = millisToLocalDate(event.from),
+                    toTime = millisToLocalTime(event.to),
+                    toDate = millisToLocalDate(event.to),
+                    selectedReminderOption = TimeOption.fromTime(
+                        differenceInMinutes(
+                            event.to,
+                            event.remindAt
+                        ).toString()
+                    ),
+                    attendees = event.attendees,
+                    initialEventAttendees = event.attendees,
+                    eventPhotos = event.photos.map { photo ->
+                        Uri.parse(photo.url)
+                    },
+                    initialPhotos = event.photos,
+                    host = event.host
+                )
             }
         }
     }

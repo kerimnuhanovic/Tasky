@@ -13,3 +13,9 @@ CREATE TABLE eventAttendeeEntity (
 insertEventAttendee:
 INSERT OR REPLACE INTO eventAttendeeEntity VALUES (?, ?, ?, ?, ?, ?, ?);
 
+getEventAttendees:
+SELECT * FROM eventAttendeeEntity WHERE eventId = ?;
+
+deleteEventAttendee:
+DELETE FROM eventAttendeeEntity WHERE userId = ?;
+

@@ -8,3 +8,12 @@ CREATE TABLE photoEntity (
 
 insertPhoto:
 INSERT OR REPLACE INTO photoEntity VALUES (?, ?, ?, ?);
+
+getEventPhotos:
+SELECT * FROM photoEntity WHERE eventId = ? AND shouldBeDeleted = 0;
+
+markPhotoForDelete:
+UPDATE photoEntity SET shouldBeDeleted = ? WHERE key = ?;
+
+deletePhoto:
+DELETE FROM photoEntity WHERE key = ?;

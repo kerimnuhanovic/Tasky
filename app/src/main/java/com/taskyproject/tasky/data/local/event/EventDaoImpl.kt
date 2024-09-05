@@ -1,6 +1,7 @@
 package com.taskyproject.tasky.data.local.event
 
 import com.taskyproject.tasky.domain.model.Event
+import taskydatabase.EventEntity
 import taskydatabase.EventEntityQueries
 import javax.inject.Inject
 
@@ -25,6 +26,31 @@ class EventDaoImpl @Inject constructor(
             shouldBeDeleted = if (shouldBeDeleted) 1 else 0,
             shouldBeUpdated = if (shouldBeUpdated) 1 else 0,
             isAddedOnRemote = if (isAddedOnRemote) 1 else 0
+        )
+    }
+
+    override suspend fun getEvent(id: String): EventEntity {
+        return eventQueries.getEvent(id).executeAsOne()
+    }
+
+    override suspend fun updateEvent(
+        event: Event,
+        shouldBeDeleted: Boolean,
+        shouldBeUpdated: Boolean,
+        isAddedOnRemote: Boolean
+    ) {
+        eventQueries.updateEvent(
+            id = event.id,
+            title = event.title,
+            description = event.description,
+            fromTime = event.from,
+            toTime = event.to,
+            remindAt = event.remindAt,
+            host = event.host,
+            isUserEventCreator = if (event.isUserEventCreator) 1 else 0,
+            shouldBeDeleted = if (shouldBeDeleted) 1 else 0,
+            shouldBeUpdated = if (shouldBeUpdated) 1 else 0,
+            isAddedOnRemote = if (isAddedOnRemote) 1 else 0,
         )
     }
 

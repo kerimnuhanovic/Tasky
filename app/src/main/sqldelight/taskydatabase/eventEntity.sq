@@ -15,6 +15,10 @@ CREATE TABLE eventEntity (
 insertEvent:
 INSERT OR REPLACE INTO eventEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
-getLastInsertedRecordId:
-SELECT last_insert_rowid() FROM eventEntity;
+getEvent:
+SELECT * FROM eventEntity WHERE id = ?;
+
+updateEvent:
+UPDATE eventEntity SET isUserEventCreator = ?, title = ?, description = ?, fromTime = ?, toTime = ?, host = ?, remindAt = ?,
+shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;
 

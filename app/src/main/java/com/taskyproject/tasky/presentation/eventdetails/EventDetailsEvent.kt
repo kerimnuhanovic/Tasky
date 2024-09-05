@@ -1,7 +1,9 @@
 package com.taskyproject.tasky.presentation.eventdetails
 
 import android.net.Uri
+import com.taskyproject.tasky.domain.model.EventAttendee
 import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.Photo
 import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.domain.model.VisitorOption
 
@@ -29,4 +31,6 @@ sealed interface EventDetailsEvent {
     data object OnAddVisitorClick : EventDetailsEvent
     data object OnVisitorDialogCloseClick : EventDetailsEvent
     data object OnVisitorDialogOpenClick : EventDetailsEvent
+    data class OnAttendeeDeleteClick(val attendee: EventAttendee) : EventDetailsEvent
+    data class OnDeletePhotoClick(val photo: Uri) : EventDetailsEvent
 }
