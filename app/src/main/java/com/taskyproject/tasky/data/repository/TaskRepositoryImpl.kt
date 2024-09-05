@@ -33,13 +33,13 @@ class TaskRepositoryImpl @Inject constructor(
 
     override suspend fun updateTask(task: Task): Result<Task> {
         return try {
-            val reminderDocument = taskDao.getTask(task.id)
+            val taskDocument = taskDao.getTask(task.id)
             taskDao.updateTask(
                 task = task,
-                isAddedOnRemote = reminderDocument.isAddedOnRemote == 1L,
+                isAddedOnRemote = taskDocument.isAddedOnRemote == 1L,
                 shouldBeUpdated = true
             )
-            if (reminderDocument.isAddedOnRemote == 1L) {
+            if (taskDocument.isAddedOnRemote == 1L) {
                 taskApi.updateTask(task)
                 taskDao.updateTask(task, isAddedOnRemote = true, shouldBeUpdated = false)
             }

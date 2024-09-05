@@ -36,6 +36,7 @@
     <string name="going">Going</string>
     <string name="not_going">Not Going</string>
     <string name="event_created">Event has been successfully created</string>
+    <string name="event_created_with_images_skipped">Event created successfully, though some images were skipped due to size constraints.</string>
     <string name="task">Task</string>
     <string name="at">At</string>
     <string name="task_created">Task has been successfully created</string>
@@ -43,4 +44,7 @@
     <string name="reminder">Reminder</string>
     <string name="reminder_created">Reminder has been successfully created</string>
     <string name="reminder_updated">Reminder has been successfully updated</string>
+    <string name="event_updated">Event has been successfully updated</string>
+    <string name="event_updated_with_images_skipped">Event updated successfully, though some images were skipped due to size constraints.</string>
+
 </resources>

@@ -2,7 +2,7 @@ package com.taskyproject.tasky.presentation.eventdetails
 
 import android.net.Uri
 import com.taskyproject.tasky.domain.model.EventAttendee
-import com.taskyproject.tasky.domain.model.Option
+import com.taskyproject.tasky.domain.model.Photo
 import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.domain.model.VisitorOption
 import java.time.LocalDate
@@ -29,5 +29,11 @@ data class EventDetailsState(
     val visitorEmail: String = "",
     val isVisitorAdditionInProgress: Boolean = false,
     val visitorErrorMessageId: Int? = null,
-    val attendees: List<EventAttendee> = emptyList()
+    val attendees: List<EventAttendee> = emptyList(),
+    val isCreateOperation: Boolean = true,
+    val initialPhotos: List<Photo> = emptyList(),
+    val host: String = "",
+    val attendeesToDelete: List<EventAttendee> = emptyList(),
+    val photosToDelete: List<Photo> = emptyList(),
+    val initialEventAttendees: List<EventAttendee> = emptyList()
 )

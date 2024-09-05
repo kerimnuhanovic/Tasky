@@ -1,6 +1,7 @@
 package com.taskyproject.tasky.data.local.eventattendee
 
 import com.taskyproject.tasky.domain.model.EventAttendee
+import taskydatabase.EventAttendeeEntity
 import taskydatabase.EventAttendeeEntityQueries
 import javax.inject.Inject
 
@@ -17,5 +18,13 @@ class EventAttendeeDaoImpl @Inject constructor(
             remindAt = eventAttendee.remindAt!!,
             createdAt = eventAttendee.createdAt.toString()
         )
+    }
+
+    override suspend fun getEventAttendees(eventId: String): List<EventAttendeeEntity> {
+        return eventAttendeeQueries.getEventAttendees(eventId).executeAsList()
+    }
+
+    override suspend fun deleteEventAttendee(userId: String) {
+        eventAttendeeQueries.deleteEventAttendee(userId)
     }
 }
