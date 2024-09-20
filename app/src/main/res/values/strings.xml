@@ -46,5 +46,9 @@
     <string name="reminder_updated">Reminder has been successfully updated</string>
     <string name="event_updated">Event has been successfully updated</string>
     <string name="event_updated_with_images_skipped">Event updated successfully, though some images were skipped due to size constraints.</string>
-
+    <string name="dash">-</string>
+    <string name="dot">•</string>
+    <string name="open">Open</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

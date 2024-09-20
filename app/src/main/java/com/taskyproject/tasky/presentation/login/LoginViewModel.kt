@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(
                                 fullName = result.data.fullName,
                                 accessTokenExpiration = result.data.accessTokenExpiration
                             )
-                            _uiEvent.send(UiEvent.Navigate(Route.EventList))
+                            _uiEvent.send(UiEvent.Navigate(Route.Agenda))
                         }
                         is Result.Failure -> {
                         }

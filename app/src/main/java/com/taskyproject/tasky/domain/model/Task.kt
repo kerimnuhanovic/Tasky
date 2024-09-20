@@ -7,4 +7,6 @@ data class Task(
     val time: Long,
     val remindAt: Long,
     val isDone: Boolean
-)
+) : AgendaItem() {
+    override fun getStartTime(): Long = time
+}

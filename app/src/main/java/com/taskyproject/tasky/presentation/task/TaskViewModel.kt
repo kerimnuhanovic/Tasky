@@ -36,8 +36,11 @@ class TaskViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase
 ) : ViewModel() {
     private val taskId = savedStateHandle.toRoute<Route.Task>().taskId
+    private val shouldOpenInEditMode = savedStateHandle.toRoute<Route.Task>().shouldOpenInEditMode
 
-    private val _state = MutableStateFlow(TaskState())
+    private val _state = MutableStateFlow(TaskState(
+        isEditable = shouldOpenInEditMode
+    ))
     val state = _state.asStateFlow()
 
     private val _uiEvent = Channel<UiEvent>()
@@ -153,6 +156,7 @@ class TaskViewModel @Inject constructor(
                         _state.value = state.value.copy(
                             isEditable = false
                         )
+                        _uiEvent.send(UiEvent.Navigate(Route.Agenda))
                     }
                     is Result.Failure -> {
                         _uiEvent.send(UiEvent.ShowToast(ToastMessage.TaskCreationFailed(result.errorMessageId)))

@@ -6,4 +6,6 @@ data class Reminder(
     val description: String,
     val time: Long,
     val remindAt: Long
-)
+) : AgendaItem() {
+    override fun getStartTime(): Long = time
+}

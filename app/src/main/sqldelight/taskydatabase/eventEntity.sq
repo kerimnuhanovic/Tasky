@@ -18,6 +18,9 @@ INSERT OR REPLACE INTO eventEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 getEvent:
 SELECT * FROM eventEntity WHERE id = ?;
 
+listEvents:
+SELECT * FROM eventEntity WHERE shouldBeDeleted = 0;
+
 updateEvent:
 UPDATE eventEntity SET isUserEventCreator = ?, title = ?, description = ?, fromTime = ?, toTime = ?, host = ?, remindAt = ?,
 shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;

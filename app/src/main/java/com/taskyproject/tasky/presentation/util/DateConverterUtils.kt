@@ -21,6 +21,11 @@ fun millisToLocalTime(millis: Long): LocalTime {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime()
 }
 
+fun millisToLocalDateTime(millis: Long): LocalDateTime {
+    val instant = Instant.ofEpochMilli(millis)
+    return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+}
+
 fun differenceInMinutes(time1: Long, time2: Long): Long {
     val differenceInMillis = time1 - time2
     val differenceInMinutes = differenceInMillis / (1000 * 60)

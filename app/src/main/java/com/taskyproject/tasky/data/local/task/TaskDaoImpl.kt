@@ -1,6 +1,10 @@
 package com.taskyproject.tasky.data.local.task
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.taskyproject.tasky.domain.model.Task
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import taskydatabase.TaskEntity
 import taskydatabase.TaskEntityQueries
 import javax.inject.Inject
@@ -29,6 +33,10 @@ class TaskDaoImpl @Inject constructor(
 
     override suspend fun getTask(id: String): TaskEntity {
         return taskEntityQueries.getTask(id).executeAsOne()
+    }
+
+    override fun listTasks(): Flow<List<TaskEntity>> {
+        return taskEntityQueries.listTasks().asFlow().mapToList(Dispatchers.IO)
     }
 
     override suspend fun updateTask(

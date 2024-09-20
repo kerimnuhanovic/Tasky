@@ -1,9 +1,9 @@
 package com.taskyproject.tasky.presentation.eventdetails
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,19 +24,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.material3.rememberTopAppBarState
@@ -47,20 +42,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import com.taskyproject.tasky.R
 import com.taskyproject.tasky.domain.model.VisitorOption
 import com.taskyproject.tasky.presentation.components.AddVisitorDialog
 import com.taskyproject.tasky.presentation.components.DatePickerWithDialog
-import com.taskyproject.tasky.presentation.components.Dropdown
+import com.taskyproject.tasky.presentation.components.TimeDropdown
 import com.taskyproject.tasky.presentation.components.ImageBox
 import com.taskyproject.tasky.presentation.components.TimePickerWithDialog
 import com.taskyproject.tasky.presentation.components.VisitorCard
@@ -112,6 +107,10 @@ fun EventDetailsScreen(
         }
     }
 
+    val activity = LocalView.current.context as Activity
+    val backgroundArgb = MaterialTheme.colorScheme.secondary.toArgb()
+    activity.window.statusBarColor = backgroundArgb
+
     EventDetailsScreenContent(
         state = state,
         onEvent = viewModel::onEvent
@@ -125,6 +124,7 @@ private fun EventDetailsScreenContent(
     onEvent: (EventDetailsEvent) -> Unit
 ) {
     val dimensions = LocalDimensions.current
+
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uriList ->
             uriList.map {
@@ -561,7 +561,7 @@ private fun EventDetailsScreenContent(
                         tint = Gray
                     )
                 }
-                Dropdown(
+                TimeDropdown(
                     isExpanded = state.isReminderDropdownExpanded,
                     selectedItem = state.selectedReminderOption,
                     options = state.reminderOptions,

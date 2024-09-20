@@ -1,6 +1,10 @@
 package com.taskyproject.tasky.data.local.event
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.taskyproject.tasky.domain.model.Event
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import taskydatabase.EventEntity
 import taskydatabase.EventEntityQueries
 import javax.inject.Inject
@@ -31,6 +35,10 @@ class EventDaoImpl @Inject constructor(
 
     override suspend fun getEvent(id: String): EventEntity {
         return eventQueries.getEvent(id).executeAsOne()
+    }
+
+    override fun listEvents(): Flow<List<EventEntity>> {
+        return eventQueries.listEvents().asFlow().mapToList(Dispatchers.IO)
     }
 
     override suspend fun updateEvent(
