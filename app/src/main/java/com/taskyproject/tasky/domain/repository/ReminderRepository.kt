@@ -7,4 +7,5 @@ interface ReminderRepository {
     suspend fun createReminder(reminder: Reminder): Result<Reminder>
     suspend fun getReminder(id: String): Reminder
     suspend fun updateReminder(reminder: Reminder): Result<Reminder>
+    suspend fun deleteReminder(reminderId: String): Result<Unit>
 }

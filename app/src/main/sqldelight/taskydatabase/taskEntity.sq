@@ -16,5 +16,14 @@ INSERT OR REPLACE INTO taskEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 getTask:
 SELECT * FROM taskEntity WHERE id = ?;
 
+listTasks:
+SELECT * FROM taskEntity WHERE shouldBeDeleted = 0;
+
 updateReminder:
 UPDATE taskEntity SET title = ?, description = ?, time = ?, remindAt = ?, isDone = ?, shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;
+
+markTaskForDelete:
+UPDATE taskEntity SET shouldBeDeleted = 1 WHERE id = ?;
+
+deleteTask:
+DELETE FROM taskEntity WHERE id = ?;

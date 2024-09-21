@@ -1,5 +1,6 @@
 package com.taskyproject.tasky.presentation.reminder
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,9 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.taskyproject.tasky.R
 import com.taskyproject.tasky.presentation.components.DatePickerWithDialog
-import com.taskyproject.tasky.presentation.components.Dropdown
+import com.taskyproject.tasky.presentation.components.TimeDropdown
 import com.taskyproject.tasky.presentation.components.TimePickerWithDialog
-import com.taskyproject.tasky.presentation.task.TaskEvent
 import com.taskyproject.tasky.presentation.util.UiEvent
 import com.taskyproject.tasky.presentation.util.formatDate
 import com.taskyproject.tasky.ui.theme.DarkGray
@@ -55,7 +57,6 @@ import com.taskyproject.tasky.ui.theme.LightGray
 import com.taskyproject.tasky.ui.theme.LightPurple
 import com.taskyproject.tasky.ui.theme.LightRed
 import com.taskyproject.tasky.ui.theme.LocalDimensions
-import com.taskyproject.tasky.ui.theme.PrimaryBlue
 import com.taskyproject.tasky.ui.theme.TaskyTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -96,6 +97,11 @@ fun ReminderScreen(
             }
         }
     }
+
+    val activity = LocalView.current.context as Activity
+    val backgroundArgb = MaterialTheme.colorScheme.tertiary.toArgb()
+    activity.window.statusBarColor = backgroundArgb
+
     ReminderScreenContent(
         state = state,
         onEvent = viewModel::onEvent
@@ -369,7 +375,7 @@ private fun ReminderScreenContent(
                         tint = Gray
                     )
                 }
-                Dropdown(
+                TimeDropdown(
                     isExpanded = state.isReminderDropdownExpanded,
                     selectedItem = state.selectedReminderOption,
                     options = state.reminderOptions,

@@ -50,4 +50,17 @@ class TaskRepositoryImpl @Inject constructor(
             handleApiError(ex)
         }
     }
+
+    override suspend fun deleteTask(taskId: String): Result<Unit> {
+        return try {
+            taskDao.markTaskForDelete(taskId)
+            taskApi.deleteTask(taskId)
+            taskDao.deleteTask(taskId)
+            Result.Success(Unit)
+        } catch (ex: UnknownHostException) {
+            Result.Success(Unit)
+        } catch (ex: Exception) {
+            handleApiError(ex)
+        }
+    }
 }

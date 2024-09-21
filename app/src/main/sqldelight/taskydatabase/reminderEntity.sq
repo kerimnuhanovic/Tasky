@@ -15,5 +15,14 @@ INSERT OR REPLACE INTO reminderEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 getReminder:
 SELECT * FROM reminderEntity WHERE id = ?;
 
+listReminders:
+SELECT * FROM  reminderEntity WHERE shouldBeDeleted = 0;
+
 updateReminder:
 UPDATE reminderEntity SET title = ?, description = ?, time = ?, remindAt = ?, shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;
+
+markReminderForDelete:
+UPDATE reminderEntity SET shouldBeDeleted = 1 WHERE id = ?;
+
+deleteReminder:
+DELETE FROM reminderEntity WHERE id = ?;

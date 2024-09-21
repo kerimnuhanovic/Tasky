@@ -47,9 +47,12 @@ class EventDetailsViewModel @Inject constructor(
     private val updateEventUseCase: UpdateEventUseCase
 ) : ViewModel() {
     private val eventId = savedStateHandle.toRoute<Route.EventDetails>().eventId
+    private val shouldOpenInEditMode = savedStateHandle.toRoute<Route.EventDetails>().shouldOpenInEditMode
 
     private val _state = MutableStateFlow(
-        EventDetailsState()
+        EventDetailsState(
+            isEditable = shouldOpenInEditMode
+        )
     )
     val state = _state.asStateFlow()
 
@@ -265,6 +268,7 @@ class EventDetailsViewModel @Inject constructor(
                             }
                         )
                         _uiEvent.send(UiEvent.ShowToast(ToastMessage.EventCreated(messageId)))
+                        _uiEvent.send(UiEvent.Navigate(Route.Agenda))
                     }
 
                     is Result.Failure -> {

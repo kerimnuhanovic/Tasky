@@ -52,4 +52,17 @@ class ReminderRepositoryImpl @Inject constructor(
             handleApiError(ex)
         }
     }
+
+    override suspend fun deleteReminder(reminderId: String): Result<Unit> {
+        return try {
+            reminderDao.markReminderForDelete(reminderId)
+            reminderApi.deleteReminder(reminderId)
+            reminderDao.deleteReminder(reminderId)
+            Result.Success(Unit)
+        } catch (ex: UnknownHostException) {
+            return Result.Success(Unit)
+        } catch (ex: Exception) {
+            handleApiError(ex)
+        }
+    }
 }

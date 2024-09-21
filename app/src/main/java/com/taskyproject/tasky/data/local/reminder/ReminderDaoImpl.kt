@@ -1,6 +1,10 @@
 package com.taskyproject.tasky.data.local.reminder
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.taskyproject.tasky.domain.model.Reminder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import taskydatabase.ReminderEntity
 import taskydatabase.ReminderEntityQueries
 import javax.inject.Inject
@@ -30,6 +34,10 @@ class ReminderDaoImpl @Inject constructor(
         return reminderEntityQueries.getReminder(id).executeAsOne()
     }
 
+    override fun listReminders(): Flow<List<ReminderEntity>> {
+        return reminderEntityQueries.listReminders().asFlow().mapToList(Dispatchers.IO)
+    }
+
     override suspend fun updateReminder(
         reminder: Reminder,
         shouldBeDeleted: Boolean,
@@ -46,5 +54,13 @@ class ReminderDaoImpl @Inject constructor(
             shouldBeUpdated = if (shouldBeUpdated) 1 else 0,
             isAddedOnRemote = if (isAddedOnRemote) 1 else 0
         )
+    }
+
+    override suspend fun markReminderForDelete(reminderId: String) {
+        reminderEntityQueries.markReminderForDelete(reminderId)
+    }
+
+    override suspend fun deleteReminder(reminderId: String) {
+        reminderEntityQueries.deleteReminder(reminderId)
     }
 }

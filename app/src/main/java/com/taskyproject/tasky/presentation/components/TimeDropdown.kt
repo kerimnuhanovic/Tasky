@@ -1,6 +1,5 @@
 package com.taskyproject.tasky.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,13 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.taskyproject.tasky.domain.model.Option
 import com.taskyproject.tasky.domain.model.TimeOption
 import com.taskyproject.tasky.ui.theme.TaskyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Dropdown(
+fun TimeDropdown(
     isExpanded: Boolean,
     selectedItem: TimeOption,
     options: List<TimeOption>,
@@ -69,9 +67,9 @@ fun Dropdown(
 
 @Composable
 @Preview(showBackground = true)
-private fun DropdownPreview() {
+private fun TimeDropdownPreview() {
     TaskyTheme {
-        Dropdown(
+        TimeDropdown(
             isExpanded = true,
             selectedItem = TimeOption.ThirtyMinutesBefore,
             options = TimeOption.listTimeOptions(),

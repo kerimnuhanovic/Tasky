@@ -35,8 +35,11 @@ class ReminderViewModel @Inject constructor(
     private val updateReminderUseCase: UpdateReminderUseCase
 ) : ViewModel() {
     private val reminderId = savedStateHandle.toRoute<Route.Reminder>().reminderId
+    private val shouldOpenInEditMode = savedStateHandle.toRoute<Route.Reminder>().shouldOpenInEditMode
 
-    private val _state = MutableStateFlow(ReminderState())
+    private val _state = MutableStateFlow(ReminderState(
+        isEditable = shouldOpenInEditMode
+    ))
     val state = _state.asStateFlow()
 
     private val _uiEvent = Channel<UiEvent>()
@@ -152,6 +155,7 @@ class ReminderViewModel @Inject constructor(
                         _state.value = state.value.copy(
                             isEditable = false
                         )
+                        _uiEvent.send(UiEvent.Navigate(Route.Agenda))
                     }
                     is Result.Failure -> {
                         _uiEvent.send(UiEvent.ShowToast(ToastMessage.ReminderCreationFailed(result.errorMessageId)))

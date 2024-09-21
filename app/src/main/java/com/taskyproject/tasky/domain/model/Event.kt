@@ -11,4 +11,6 @@ data class Event(
     val remindAt: Long,
     val photos: List<Photo>,
     val attendees: List<EventAttendee>
-)
+) : AgendaItem() {
+    override fun getStartTime(): Long = from
+}

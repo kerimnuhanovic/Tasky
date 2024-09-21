@@ -1,6 +1,10 @@
 package com.taskyproject.tasky.data.local.task
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.taskyproject.tasky.domain.model.Task
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import taskydatabase.TaskEntity
 import taskydatabase.TaskEntityQueries
 import javax.inject.Inject
@@ -31,6 +35,10 @@ class TaskDaoImpl @Inject constructor(
         return taskEntityQueries.getTask(id).executeAsOne()
     }
 
+    override fun listTasks(): Flow<List<TaskEntity>> {
+        return taskEntityQueries.listTasks().asFlow().mapToList(Dispatchers.IO)
+    }
+
     override suspend fun updateTask(
         task: Task,
         shouldBeDeleted: Boolean,
@@ -48,5 +56,13 @@ class TaskDaoImpl @Inject constructor(
             shouldBeUpdated = if (shouldBeUpdated) 1 else 0,
             isAddedOnRemote = if (isAddedOnRemote) 1 else 0
         )
+    }
+
+    override suspend fun markTaskForDelete(taskId: String) {
+        taskEntityQueries.markTaskForDelete(taskId)
+    }
+
+    override suspend fun deleteTask(taskId: String) {
+        taskEntityQueries.deleteTask(taskId)
     }
 }

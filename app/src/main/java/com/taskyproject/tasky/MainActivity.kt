@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,6 +18,7 @@ import com.taskyproject.tasky.navigation.Route
 import com.taskyproject.tasky.navigation.navigate
 import com.taskyproject.tasky.navigation.navigateBack
 import com.taskyproject.tasky.navigation.navigateBackWithResult
+import com.taskyproject.tasky.presentation.agenda.AgendaScreen
 import com.taskyproject.tasky.presentation.descriptionedit.DescriptionEditScreen
 import com.taskyproject.tasky.presentation.eventdetails.EventDetailsScreen
 import com.taskyproject.tasky.presentation.register.RegisterScreen
@@ -45,15 +45,8 @@ class MainActivity : ComponentActivity() {
                     composable<Route.Register> {
                         RegisterScreen(onNavigate = navController::navigate, onNavigateBack = navController::navigateBack)
                     }
-                    composable<Route.EventList> { 
-                        Column(modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())) {
-                            Text(text = "Event List")
-                            for (i in 1..100) {
-                                Text(text = "${i}")
-                            }
-                        }
+                    composable<Route.Agenda> {
+                        AgendaScreen(onNavigate = navController::navigate)
                     }
                     composable<Route.EventDetails> {
                         val title = it.savedStateHandle.getStateFlow(TITLE_KEY, null)

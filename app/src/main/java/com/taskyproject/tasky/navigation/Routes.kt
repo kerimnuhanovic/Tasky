@@ -7,19 +7,19 @@ sealed interface Route {
     data object Login : Route
 
     @Serializable
-    data object EventList : Route
+    data object Agenda : Route
 
     @Serializable
     data object Register : Route
 
     @Serializable
-    data class EventDetails(val eventId: String? = null) : Route
+    data class EventDetails(val eventId: String? = null, val shouldOpenInEditMode: Boolean) : Route
 
     @Serializable
-    data class Task(val taskId: String? = null) : Route
+    data class Task(val taskId: String? = null, val shouldOpenInEditMode: Boolean) : Route
 
     @Serializable
-    data class Reminder(val reminderId: String? = null) : Route
+    data class Reminder(val reminderId: String? = null, val shouldOpenInEditMode: Boolean) : Route
 
     @Serializable
     data class TitleEdit(val title: String) : Route
