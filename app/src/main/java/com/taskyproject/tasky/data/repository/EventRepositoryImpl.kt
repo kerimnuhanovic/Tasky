@@ -124,8 +124,19 @@ class EventRepositoryImpl @Inject constructor(
         } catch (ex: UnknownHostException) {
             Result.Success(event)
         } catch (ex: Exception) {
-            println("evo me u exceptionu")
-            println(ex)
+            handleApiError(ex)
+        }
+    }
+
+    override suspend fun deleteEvent(eventId: String): Result<Unit> {
+        return try {
+            eventDao.markEventForDelete(eventId)
+            eventApi.deleteEvent(eventId)
+            eventDao.deleteEvent(eventId)
+            Result.Success(Unit)
+        } catch (ex: UnknownHostException) {
+            Result.Success(Unit)
+        } catch (ex: Exception) {
             handleApiError(ex)
         }
     }

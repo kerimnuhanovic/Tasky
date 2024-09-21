@@ -22,4 +22,6 @@ interface ReminderDao {
         shouldBeUpdated: Boolean = false,
         isAddedOnRemote: Boolean = false,
     )
+    suspend fun markReminderForDelete(reminderId: String)
+    suspend fun deleteReminder(reminderId: String)
 }

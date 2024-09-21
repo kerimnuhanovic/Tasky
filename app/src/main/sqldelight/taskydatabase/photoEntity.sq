@@ -3,7 +3,7 @@ CREATE TABLE photoEntity (
     url TEXT NOT NULL,
     eventId TEXT NOT NULL,
     shouldBeDeleted INTEGER NOT NULL CHECK (shouldBeDeleted IN (0, 1)),
-    FOREIGN KEY (eventId) REFERENCES eventEntity(id)
+    FOREIGN KEY (eventId) REFERENCES eventEntity(id) ON DELETE CASCADE
 );
 
 insertPhoto:

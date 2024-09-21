@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -47,6 +48,7 @@ import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.model.MenuItem
 import com.taskyproject.tasky.domain.model.Reminder
 import com.taskyproject.tasky.domain.model.Task
+import com.taskyproject.tasky.presentation.components.ActionConfirmationDialog
 import com.taskyproject.tasky.presentation.components.Calendar
 import com.taskyproject.tasky.presentation.components.EventItem
 import com.taskyproject.tasky.presentation.components.ReminderItem
@@ -121,6 +123,21 @@ private fun AgendaScreenContent(
             modifier = Modifier
                 .padding(it)
         ) {
+            if (state.isConfirmationModalOpen) {
+                item {
+                    ActionConfirmationDialog(
+                        titleId = R.string.delete,
+                        descriptionId = R.string.delete_description,
+                        icon = Icons.Outlined.Delete,
+                        onConfirm = {
+                            onEvent(AgendaEvent.OnConfirmDeleteClick)
+                        },
+                        onDismiss = {
+                            onEvent(AgendaEvent.OnDismissModalClick)
+                        }
+                    )
+                }
+            }
             item {
                 Calendar(
                     onDateSelect = { selectedDate ->

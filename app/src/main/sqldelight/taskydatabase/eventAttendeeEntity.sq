@@ -7,7 +7,7 @@ CREATE TABLE eventAttendeeEntity (
     remindAt INTEGER NOT NULL,
     createdAt TEXT NOT NULL,
     PRIMARY KEY (userId, eventId),
-    FOREIGN KEY (eventId) REFERENCES eventEntity(id)
+    FOREIGN KEY (eventId) REFERENCES eventEntity(id) ON DELETE CASCADE
 );
 
 insertEventAttendee:

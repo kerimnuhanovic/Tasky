@@ -15,4 +15,7 @@ interface EventRepository {
         deletedAttendees: List<EventAttendee>,
         deletedPhotos: List<Photo>
     ): Result<Event>
+    suspend fun deleteEvent(
+        eventId: String
+    ): Result<Unit>
 }

@@ -57,4 +57,12 @@ class TaskDaoImpl @Inject constructor(
             isAddedOnRemote = if (isAddedOnRemote) 1 else 0
         )
     }
+
+    override suspend fun markTaskForDelete(taskId: String) {
+        taskEntityQueries.markTaskForDelete(taskId)
+    }
+
+    override suspend fun deleteTask(taskId: String) {
+        taskEntityQueries.deleteTask(taskId)
+    }
 }

@@ -25,3 +25,9 @@ updateEvent:
 UPDATE eventEntity SET isUserEventCreator = ?, title = ?, description = ?, fromTime = ?, toTime = ?, host = ?, remindAt = ?,
 shouldBeDeleted = ?, isAddedOnRemote = ?, shouldBeUpdated = ? WHERE id = ?;
 
+markEventForDelete:
+UPDATE eventEntity SET shouldBeDeleted = 1 WHERE id = ?;
+
+deleteEvent:
+DELETE FROM eventEntity WHERE id = ?;
+

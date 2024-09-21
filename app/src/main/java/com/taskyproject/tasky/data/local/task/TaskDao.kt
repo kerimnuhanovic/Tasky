@@ -19,4 +19,6 @@ interface TaskDao {
         shouldBeUpdated: Boolean = false,
         isAddedOnRemote: Boolean = false,
     )
+    suspend fun markTaskForDelete(taskId: String)
+    suspend fun deleteTask(taskId: String)
 }

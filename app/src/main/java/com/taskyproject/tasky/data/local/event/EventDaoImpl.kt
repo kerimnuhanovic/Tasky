@@ -62,4 +62,12 @@ class EventDaoImpl @Inject constructor(
         )
     }
 
+    override suspend fun markEventForDelete(eventId: String) {
+        eventQueries.markEventForDelete(eventId)
+    }
+
+    override suspend fun deleteEvent(eventId: String) {
+        eventQueries.deleteEvent(eventId)
+    }
+
 }

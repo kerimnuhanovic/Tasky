@@ -8,4 +8,5 @@ import java.io.File
 interface EventApi {
     suspend fun createEvent(event: Event, eventPhotos: List<File>): EventDto
     suspend fun updateEvent(eventRequestDto: UpdateEventRequestDto, eventPhotos: List<File>): EventDto
+    suspend fun deleteEvent(eventId: String)
 }

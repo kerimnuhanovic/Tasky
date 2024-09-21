@@ -9,5 +9,7 @@ import java.time.LocalDate
 data class AgendaState(
     val agendaItems: List<AgendaItem> = emptyList(),
     val isBottomSheetOpened: Boolean = false,
-    val indexOfOpenedMenu: Int? = null
+    val indexOfOpenedMenu: Int? = null,
+    val isConfirmationModalOpen: Boolean = false,
+    val agendaItemToDelete: AgendaItem? = null
 )

@@ -2,14 +2,22 @@ package com.taskyproject.tasky.presentation.agenda
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.taskyproject.tasky.R
+import com.taskyproject.tasky.domain.model.AgendaItem
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.model.Reminder
 import com.taskyproject.tasky.domain.model.Task
+import com.taskyproject.tasky.domain.usecase.DeleteEventUseCase
+import com.taskyproject.tasky.domain.usecase.DeleteReminderUseCase
+import com.taskyproject.tasky.domain.usecase.DeleteTaskUseCase
 import com.taskyproject.tasky.domain.usecase.GetAgendaUseCase
+import com.taskyproject.tasky.domain.util.Result
 import com.taskyproject.tasky.navigation.Route
 import com.taskyproject.tasky.presentation.util.AgendaItemType
+import com.taskyproject.tasky.presentation.util.ToastMessage
 import com.taskyproject.tasky.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +33,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
-    private val getAgendaUseCase: GetAgendaUseCase
+    private val getAgendaUseCase: GetAgendaUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
+    private val deleteReminderUseCase: DeleteReminderUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase
 ) : ViewModel() {
 
     private val selectedDate = MutableStateFlow<LocalDate>(LocalDate.now())
@@ -83,7 +94,11 @@ class AgendaViewModel @Inject constructor(
             }
 
             is AgendaEvent.OnDeleteAgendaItemClick -> {
-
+                _state.value = state.value.copy(
+                    isConfirmationModalOpen = true,
+                    agendaItemToDelete = event.agendaItem,
+                    indexOfOpenedMenu = null
+                )
             }
             is AgendaEvent.OnEditAgendaItemClick -> {
                 viewModelScope.launch {
@@ -120,14 +135,75 @@ class AgendaViewModel @Inject constructor(
                     }
                 }
             }
+
+            AgendaEvent.OnConfirmDeleteClick -> {
+                deleteAgendaItem(state.value.agendaItemToDelete!!)
+            }
+            AgendaEvent.OnDismissModalClick -> {
+                _state.value = state.value.copy(
+                    isConfirmationModalOpen = false,
+                    agendaItemToDelete = null
+                )
+            }
         }
     }
 
-    private fun getAgenda() {
-        viewModelScope.launch {
-            selectedDate.collect { selectedDate ->
-                getAgendaUseCase(selectedDate).collect { agendaItems ->
-                    _state.value = state.value.copy(agendaItems = agendaItems)
+    private fun deleteAgendaItem(agendaItem: AgendaItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (agendaItem) {
+                is Event -> {
+                    when (val result = deleteEventUseCase(agendaItem.id)) {
+                        is Result.Success -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleted(R.string.event_deleted)))
+                        }
+                        is Result.Failure -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleteFailed(result.errorMessageId)))
+                        }
+                    }
+                }
+                is Task -> {
+                    when (val result = deleteTaskUseCase(agendaItem.id)) {
+                        is Result.Success -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleted(R.string.task_deleted)))
+                        }
+                        is Result.Failure -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleteFailed(result.errorMessageId)))
+                        }
+                    }
+                }
+                is Reminder -> {
+                    when (val result = deleteReminderUseCase(agendaItem.id)) {
+                        is Result.Success -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleted(R.string.reminder_deleted)))
+                        }
+                        is Result.Failure -> {
+                            _state.value = state.value.copy(
+                                isConfirmationModalOpen = false,
+                                agendaItemToDelete = null
+                            )
+                            _uiEvent.send(UiEvent.ShowToast(ToastMessage.AgendaItemDeleteFailed(result.errorMessageId)))
+                        }
+                    }
                 }
             }
         }

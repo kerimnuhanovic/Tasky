@@ -55,4 +55,12 @@ class ReminderDaoImpl @Inject constructor(
             isAddedOnRemote = if (isAddedOnRemote) 1 else 0
         )
     }
+
+    override suspend fun markReminderForDelete(reminderId: String) {
+        reminderEntityQueries.markReminderForDelete(reminderId)
+    }
+
+    override suspend fun deleteReminder(reminderId: String) {
+        reminderEntityQueries.deleteReminder(reminderId)
+    }
 }

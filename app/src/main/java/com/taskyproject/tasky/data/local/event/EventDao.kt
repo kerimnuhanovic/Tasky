@@ -19,4 +19,6 @@ interface EventDao {
         shouldBeUpdated: Boolean = false,
         isAddedOnRemote: Boolean = false,
     )
+    suspend fun markEventForDelete(eventId: String)
+    suspend fun deleteEvent(eventId: String)
 }
