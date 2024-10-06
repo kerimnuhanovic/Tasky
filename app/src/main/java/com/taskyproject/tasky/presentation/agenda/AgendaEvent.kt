@@ -15,4 +15,8 @@ sealed interface AgendaEvent {
     data class OnMoreClick(val index: Int) : AgendaEvent
     data object OnConfirmDeleteClick : AgendaEvent
     data object OnDismissModalClick : AgendaEvent
+    data object OnLogoutMenuClick : AgendaEvent
+    data object OnLogoutClick : AgendaEvent
+    data object OnLogoutConfirmClick : AgendaEvent
+    data object OnLogoutDismissClick : AgendaEvent
 }

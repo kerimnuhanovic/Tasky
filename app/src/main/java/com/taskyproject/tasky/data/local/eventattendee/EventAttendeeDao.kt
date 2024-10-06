@@ -7,4 +7,5 @@ interface EventAttendeeDao {
     suspend fun insertAttendee(eventAttendee: EventAttendee)
     suspend fun getEventAttendees(eventId: String): List<EventAttendeeEntity>
     suspend fun deleteEventAttendee(userId: String)
+    suspend fun updateIsUserGoingToEvent(userId: String, eventId: String, isGoing: Boolean)
 }

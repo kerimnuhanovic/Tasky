@@ -27,4 +27,16 @@ class EventAttendeeDaoImpl @Inject constructor(
     override suspend fun deleteEventAttendee(userId: String) {
         eventAttendeeQueries.deleteEventAttendee(userId)
     }
+
+    override suspend fun updateIsUserGoingToEvent(
+        userId: String,
+        eventId: String,
+        isGoing: Boolean
+    ) {
+        eventAttendeeQueries.updateIsUserGoingToEvent(
+            isGoing = if (isGoing) 1L else 0L,
+            userId = userId,
+            eventId = eventId
+        )
+    }
 }

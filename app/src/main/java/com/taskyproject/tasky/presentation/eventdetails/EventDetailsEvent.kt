@@ -33,4 +33,5 @@ sealed interface EventDetailsEvent {
     data object OnVisitorDialogOpenClick : EventDetailsEvent
     data class OnAttendeeDeleteClick(val attendee: EventAttendee) : EventDetailsEvent
     data class OnDeletePhotoClick(val photo: Uri) : EventDetailsEvent
+    data object OnJoinOrLeaveEventClick : EventDetailsEvent
 }

@@ -11,5 +11,8 @@ data class AgendaState(
     val isBottomSheetOpened: Boolean = false,
     val indexOfOpenedMenu: Int? = null,
     val isConfirmationModalOpen: Boolean = false,
-    val agendaItemToDelete: AgendaItem? = null
+    val agendaItemToDelete: AgendaItem? = null,
+    val isLogoutMenuExpanded: Boolean = false,
+    val userInitials: String = "",
+    val isLogoutModalOpened: Boolean = false
 )

@@ -37,7 +37,7 @@ class TaskRepositoryImpl @Inject constructor(
             taskDao.updateTask(
                 task = task,
                 isAddedOnRemote = taskDocument.isAddedOnRemote == 1L,
-                shouldBeUpdated = true
+                shouldBeUpdated = taskDocument.isAddedOnRemote == 1L
             )
             if (taskDocument.isAddedOnRemote == 1L) {
                 taskApi.updateTask(task)
@@ -53,9 +53,14 @@ class TaskRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTask(taskId: String): Result<Unit> {
         return try {
-            taskDao.markTaskForDelete(taskId)
-            taskApi.deleteTask(taskId)
-            taskDao.deleteTask(taskId)
+            val task = taskDao.getTask(taskId)
+            if (task.isAddedOnRemote == 1L) {
+                taskDao.markTaskForDelete(taskId)
+                taskApi.deleteTask(taskId)
+                taskDao.deleteTask(taskId)
+            } else {
+                taskDao.deleteTask(taskId)
+            }
             Result.Success(Unit)
         } catch (ex: UnknownHostException) {
             Result.Success(Unit)

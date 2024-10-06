@@ -9,9 +9,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 fun main() {
-    val time1: Long = System.currentTimeMillis()
-    val time2: Long = System.currentTimeMillis() + 100
-    val instant = Instant.ofEpochMilli(1725295500000)
+    val instant = Instant.ofEpochMilli(1727479800000)
     println(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()))
-    println(time1 > time2)
 }

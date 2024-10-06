@@ -23,15 +23,40 @@ class PreferencesImpl @Inject constructor(
         accessToken: String,
         userId: String,
         fullName: String,
-        accessTokenExpiration: Long
+        accessTokenExpiration: Long,
+        email: String,
+        password: String
     ) {
         saveToken(accessToken)
         sharedPreferences.edit().putString(Preferences.USER_ID, userId).apply()
         sharedPreferences.edit().putString(Preferences.FULL_NAME, fullName).apply()
         sharedPreferences.edit().putLong(Preferences.ACCESS_TOKEN_EXPIRATION, accessTokenExpiration).apply()
+        sharedPreferences.edit().putString(Preferences.EMAIL, email).apply()
+        sharedPreferences.edit().putString(Preferences.PASSWORD, password).apply()
+    }
+
+    override fun deleteSessionInfo() {
+        sharedPreferences.edit().putString(Preferences.KEY_TOKEN, null).apply()
+        sharedPreferences.edit().putString(Preferences.USER_ID, null).apply()
+        sharedPreferences.edit().putString(Preferences.FULL_NAME, null).apply()
+        sharedPreferences.edit().putLong(Preferences.ACCESS_TOKEN_EXPIRATION, 0L).apply()
+        sharedPreferences.edit().putString(Preferences.EMAIL, null).apply()
+        sharedPreferences.edit().putString(Preferences.PASSWORD, null).apply()
     }
 
     override fun readUserId(): String? {
         return sharedPreferences.getString(Preferences.USER_ID, null)
+    }
+
+    override fun readUserEmail(): String? {
+        return sharedPreferences.getString(Preferences.EMAIL, null)
+    }
+
+    override fun readUserPassword(): String? {
+        return sharedPreferences.getString(Preferences.PASSWORD, null)
+    }
+
+    override fun readUserFullName(): String? {
+        return sharedPreferences.getString(Preferences.FULL_NAME, null)
     }
 }

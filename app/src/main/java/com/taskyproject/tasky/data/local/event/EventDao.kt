@@ -21,4 +21,10 @@ interface EventDao {
     )
     suspend fun markEventForDelete(eventId: String)
     suspend fun deleteEvent(eventId: String)
+    suspend fun listEventsForDelete(): List<String>
+    suspend fun listEventsForCreate(): List<EventEntity>
+    suspend fun listEventsForUpdate(): List<EventEntity>
+    suspend fun markEventAsAddedOnRemote(eventId: String)
+    suspend fun markEventAsUpdated(eventId: String)
+    suspend fun nuke()
 }

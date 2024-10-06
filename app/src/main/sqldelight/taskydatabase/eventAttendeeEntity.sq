@@ -19,3 +19,6 @@ SELECT * FROM eventAttendeeEntity WHERE eventId = ?;
 deleteEventAttendee:
 DELETE FROM eventAttendeeEntity WHERE userId = ?;
 
+updateIsUserGoingToEvent:
+UPDATE eventAttendeeEntity SET isGoing = ? WHERE userId = ? AND eventId = ?;
+

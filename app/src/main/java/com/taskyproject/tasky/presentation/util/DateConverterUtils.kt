@@ -7,7 +7,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-fun LocalDate.formatDate(formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy")): String {
+fun LocalDate.formatDate(formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")): String {
     return this.format(formatter)
 }
 

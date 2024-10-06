@@ -18,4 +18,5 @@ interface EventRepository {
     suspend fun deleteEvent(
         eventId: String
     ): Result<Unit>
+    suspend fun joinOrLeaveEvent(eventId: String, isGoing: Boolean): Result<Unit>
 }

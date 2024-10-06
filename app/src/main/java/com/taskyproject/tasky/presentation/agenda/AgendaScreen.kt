@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,7 +68,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AgendaScreen(
     viewModel: AgendaViewModel = hiltViewModel(),
-    onNavigate: (UiEvent.Navigate) -> Unit
+    onNavigate: (UiEvent.Navigate) -> Unit,
+    onNavigateWithPopup: (UiEvent.NavigateWithPopup) -> Unit
 ) {
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
@@ -82,6 +84,8 @@ fun AgendaScreen(
                     context.getString(event.message.valueId),
                     Toast.LENGTH_SHORT
                 ).show()
+            } else if (event is UiEvent.NavigateWithPopup) {
+                onNavigateWithPopup(event)
             }
         }
     }
@@ -138,11 +142,37 @@ private fun AgendaScreenContent(
                     )
                 }
             }
+            if (state.isLogoutModalOpened) {
+                item {
+                    ActionConfirmationDialog(
+                        titleId = R.string.logout,
+                        descriptionId = R.string.logout_description,
+                        icon = Icons.Default.ExitToApp,
+                        onConfirm = {
+                            onEvent(AgendaEvent.OnLogoutConfirmClick)
+                        },
+                        onDismiss = {
+                            onEvent(AgendaEvent.OnLogoutDismissClick)
+                        }
+                    )
+                }
+            }
             item {
                 Calendar(
                     onDateSelect = { selectedDate ->
                         onEvent(AgendaEvent.OnDateChange(selectedDate))
-                    }
+                    },
+                    isExpanded = state.isLogoutMenuExpanded,
+                    onExpandChange = {
+                        println("BLA BLA")
+                        onEvent(AgendaEvent.OnLogoutMenuClick)
+                    },
+                    menuItems = listOf(
+                        MenuItem(label = stringResource(id = R.string.logout), onItemClick = {
+                            onEvent(AgendaEvent.OnLogoutClick)
+                        })
+                    ),
+                    userInitials = state.userInitials
                 )
             }
             item {
@@ -337,6 +367,7 @@ private fun AgendaScreenPreview() {
     TaskyTheme {
         AgendaScreenContent(
             state = AgendaState(
+                userInitials = "KN",
                 indexOfOpenedMenu = null,
                 agendaItems = listOf(
                     Event(
@@ -368,7 +399,7 @@ private fun AgendaScreenPreview() {
                     )
                 )
             ),
-            onEvent = {}
+            onEvent = {},
         )
     }
 }

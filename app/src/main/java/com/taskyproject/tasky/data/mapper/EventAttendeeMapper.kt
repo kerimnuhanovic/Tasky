@@ -20,14 +20,13 @@ fun EventAttendeeDto.toEventAttendee(): EventAttendee {
 }
 
 fun EventAttendeeEntity.toEventAttendee(): EventAttendee {
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")
     return EventAttendee(
         email = email,
         fullName = fullName,
         userId = userId,
         eventId = eventId,
-        isGoing = if (isGoing == 1L) true else false,
+        isGoing = isGoing == 1L,
         remindAt = remindAt,
-        createdAt = LocalDateTime.parse(createdAt, inputFormatter)
+        createdAt = LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     )
 }

@@ -57,4 +57,8 @@
     <string name="event_deleted">Event has been successfully deleted</string>
     <string name="task_deleted">Task has been successfully deleted</string>
     <string name="reminder_deleted">Reminder has been successfully deleted</string>
+    <string name="join">Join</string>
+    <string name="leave">Leave</string>
+    <string name="logout">Log Out</string>
+    <string name="logout_description">Some of your edited agenda items in offline mode may be lost. To prevent this, please ensure you have an internet connection within the next 15 minutes, and log out.</string>
 </resources>

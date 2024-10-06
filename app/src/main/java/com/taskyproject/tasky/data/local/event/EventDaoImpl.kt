@@ -70,4 +70,28 @@ class EventDaoImpl @Inject constructor(
         eventQueries.deleteEvent(eventId)
     }
 
+    override suspend fun listEventsForDelete(): List<String> {
+        return eventQueries.listEventsForDelete().executeAsList()
+    }
+
+    override suspend fun listEventsForCreate(): List<EventEntity> {
+        return eventQueries.listEventsForCreate().executeAsList()
+    }
+
+    override suspend fun listEventsForUpdate(): List<EventEntity> {
+        return eventQueries.listEventsForUpdate().executeAsList()
+    }
+
+    override suspend fun markEventAsAddedOnRemote(eventId: String) {
+        eventQueries.markEventAsAddedOnRemote(eventId)
+    }
+
+    override suspend fun markEventAsUpdated(eventId: String) {
+        eventQueries.markEventAsUpdated(eventId)
+    }
+
+    override suspend fun nuke() {
+        eventQueries.nuke()
+    }
+
 }

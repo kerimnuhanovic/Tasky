@@ -17,6 +17,7 @@ sealed class TimeOption(val value: String, val label: String) {
         }
 
         fun fromTime(minutes: String): TimeOption {
+            println("ev me - $minutes")
             return when (minutes) {
                 "10" -> TenMinutesBefore
                 "30" -> ThirtyMinutesBefore

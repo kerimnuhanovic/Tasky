@@ -26,3 +26,21 @@ UPDATE reminderEntity SET shouldBeDeleted = 1 WHERE id = ?;
 
 deleteReminder:
 DELETE FROM reminderEntity WHERE id = ?;
+
+listRemindersForDelete:
+SELECT id FROM reminderEntity WHERE shouldBeDeleted = 1;
+
+listRemindersForCreate:
+SELECT * FROM reminderEntity WHERE isAddedOnRemote = 0;
+
+listRemindersForUpdate:
+SELECT * FROM reminderEntity WHERE shouldBeUpdated = 1 AND isAddedOnRemote = 1;
+
+markReminderAsAddedOnRemote:
+UPDATE reminderEntity SET isAddedOnRemote = 1 WHERE id = ?;
+
+markReminderAsUpdated:
+UPDATE reminderEntity SET shouldBeUpdated = 0 WHERE id = ?;
+
+nuke:
+DELETE FROM reminderEntity;

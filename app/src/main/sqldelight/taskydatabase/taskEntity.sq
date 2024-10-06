@@ -27,3 +27,21 @@ UPDATE taskEntity SET shouldBeDeleted = 1 WHERE id = ?;
 
 deleteTask:
 DELETE FROM taskEntity WHERE id = ?;
+
+listTasksForDelete:
+SELECT id FROM taskEntity WHERE shouldBeDeleted = 1;
+
+listTasksForCreate:
+SELECT * FROM taskEntity WHERE isAddedOnRemote = 0;
+
+listTasksForUpdate:
+SELECT * FROM taskEntity WHERE shouldBeUpdated = 1 AND isAddedOnRemote = 1;
+
+markTaskAsAddedOnRemote:
+UPDATE taskEntity SET isAddedOnRemote = 1 WHERE id = ?;
+
+markTaskAsUpdated:
+UPDATE taskEntity SET shouldBeUpdated = 0 WHERE id = ?;
+
+nuke:
+DELETE FROM taskEntity;

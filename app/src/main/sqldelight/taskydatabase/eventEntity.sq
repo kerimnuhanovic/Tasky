@@ -31,3 +31,21 @@ UPDATE eventEntity SET shouldBeDeleted = 1 WHERE id = ?;
 deleteEvent:
 DELETE FROM eventEntity WHERE id = ?;
 
+listEventsForDelete:
+SELECT id FROM eventEntity WHERE shouldBeDeleted = 1;
+
+listEventsForCreate:
+SELECT * FROM eventEntity WHERE isAddedOnRemote = 0;
+
+listEventsForUpdate:
+SELECT * FROM eventEntity WHERE shouldBeUpdated = 1 AND isAddedOnRemote = 1;
+
+markEventAsAddedOnRemote:
+UPDATE eventEntity SET isAddedOnRemote = 1 WHERE id = ?;
+
+markEventAsUpdated:
+UPDATE eventEntity SET shouldBeUpdated = 0 WHERE id = ?;
+
+nuke:
+DELETE FROM eventEntity;
+

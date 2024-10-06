@@ -1,5 +1,6 @@
 package com.taskyproject.tasky.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -49,14 +51,20 @@ import com.taskyproject.tasky.ui.theme.TaskyTheme
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onNavigate: (UiEvent.Navigate) -> Unit
+    onNavigate: (UiEvent.Navigate) -> Unit,
+    onNavigateWithPopup: (UiEvent.NavigateWithPopup) -> Unit
 ) {
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             if (event is UiEvent.Navigate) {
                 onNavigate(event)
+            } else if (event is UiEvent.NavigateWithPopup) {
+                onNavigateWithPopup(event)
+            } else if (event is UiEvent.ShowToast) {
+                Toast.makeText(context, context.getString(event.message.valueId), Toast.LENGTH_SHORT).show()
             }
         }
     }

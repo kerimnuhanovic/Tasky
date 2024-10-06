@@ -1,6 +1,7 @@
 package com.taskyproject.tasky.presentation.eventdetails
 
 import android.app.Activity
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,8 +23,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,14 +55,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.taskyproject.tasky.R
+import com.taskyproject.tasky.domain.model.EventAttendee
 import com.taskyproject.tasky.domain.model.VisitorOption
 import com.taskyproject.tasky.presentation.components.AddVisitorDialog
 import com.taskyproject.tasky.presentation.components.DatePickerWithDialog
 import com.taskyproject.tasky.presentation.components.TimeDropdown
 import com.taskyproject.tasky.presentation.components.ImageBox
+import com.taskyproject.tasky.presentation.components.TaskyButton
 import com.taskyproject.tasky.presentation.components.TimePickerWithDialog
 import com.taskyproject.tasky.presentation.components.VisitorCard
 import com.taskyproject.tasky.presentation.components.VisitorsWidget
+import com.taskyproject.tasky.presentation.login.LoginEvent
 import com.taskyproject.tasky.presentation.util.UiEvent
 import com.taskyproject.tasky.presentation.util.formatDate
 import com.taskyproject.tasky.ui.theme.DarkGray
@@ -69,10 +75,12 @@ import com.taskyproject.tasky.ui.theme.LightBlue
 import com.taskyproject.tasky.ui.theme.LightGray
 import com.taskyproject.tasky.ui.theme.LightRed
 import com.taskyproject.tasky.ui.theme.LocalDimensions
+import com.taskyproject.tasky.ui.theme.PrimaryBlue
 import com.taskyproject.tasky.ui.theme.TaskyTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun EventDetailsScreen(
@@ -99,9 +107,12 @@ fun EventDetailsScreen(
             viewModel.uiEvent.collect { event ->
                 if (event is UiEvent.Navigate) {
                     onNavigate(event)
-                }
-                else if (event is UiEvent.ShowToast) {
-                    Toast.makeText(context, context.getString(event.message.valueId), Toast.LENGTH_SHORT).show()
+                } else if (event is UiEvent.ShowToast) {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.message.valueId),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -282,7 +293,7 @@ private fun EventDetailsScreenContent(
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                if (state.isEditable) {
+                if (state.isEditable && state.isUserEventCreator) {
                     Icon(
                         painter = painterResource(id = R.drawable.chevron_right),
                         contentDescription = null,
@@ -315,7 +326,7 @@ private fun EventDetailsScreenContent(
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                if (state.isEditable) {
+                if (state.isEditable && state.isUserEventCreator) {
                     Icon(
                         painter = painterResource(id = R.drawable.chevron_right),
                         contentDescription = null,
@@ -366,11 +377,17 @@ private fun EventDetailsScreenContent(
                             modifier = Modifier.padding(bottom = dimensions.size16)
                         )
                         FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(dimensions.size8)
+                            horizontalArrangement = Arrangement.spacedBy(dimensions.size16)
                         ) {
                             state.eventPhotos.forEach { image ->
                                 Column {
-                                    ImageBox(onExitClick = { onEvent(EventDetailsEvent.OnDeletePhotoClick(image)) }, image = image)
+                                    ImageBox(onExitClick = {
+                                        onEvent(
+                                            EventDetailsEvent.OnDeletePhotoClick(
+                                                image
+                                            )
+                                        )
+                                    }, image = image)
                                     Spacer(modifier = Modifier.height(dimensions.size8))
                                 }
                             }
@@ -429,7 +446,7 @@ private fun EventDetailsScreenContent(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    if (state.isEditable) {
+                    if (state.isEditable && state.isUserEventCreator) {
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_right),
                             contentDescription = null,
@@ -456,7 +473,7 @@ private fun EventDetailsScreenContent(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    if (state.isEditable) {
+                    if (state.isEditable && state.isUserEventCreator) {
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_right),
                             contentDescription = null,
@@ -498,7 +515,7 @@ private fun EventDetailsScreenContent(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    if (state.isEditable) {
+                    if (state.isEditable && state.isUserEventCreator) {
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_right),
                             contentDescription = null,
@@ -525,7 +542,7 @@ private fun EventDetailsScreenContent(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    if (state.isEditable) {
+                    if (state.isEditable && state.isUserEventCreator) {
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_right),
                             contentDescription = null,
@@ -643,9 +660,16 @@ private fun EventDetailsScreenContent(
                 )
                 state.attendees.forEach { eventAttendee ->
                     if (eventAttendee.isGoing) {
-                        VisitorCard(fullName = eventAttendee.fullName, isCreator = state.host == eventAttendee.userId, onDeleteClick = {
-                            onEvent(EventDetailsEvent.OnAttendeeDeleteClick(eventAttendee))
-                        })
+                        VisitorCard(
+                            fullName = eventAttendee.fullName,
+                            isCreator = state.host == eventAttendee.userId,
+                            onDeleteClick = {
+                                onEvent(EventDetailsEvent.OnAttendeeDeleteClick(eventAttendee))
+                            },
+                            modifier = Modifier.padding(horizontal = dimensions.size16),
+                            shouldDisplayDeleteIcon = state.isUserEventCreator
+                        )
+                        Spacer(modifier = Modifier.height(dimensions.size8))
                     }
                 }
             }
@@ -662,10 +686,42 @@ private fun EventDetailsScreenContent(
                         VisitorCard(
                             fullName = eventAttendee.fullName,
                             isCreator = false,
-                            modifier = Modifier.padding(horizontal = dimensions.size16)
+                            modifier = Modifier.padding(horizontal = dimensions.size16),
+                            shouldDisplayDeleteIcon = state.isUserEventCreator
                         )
+                        Spacer(modifier = Modifier.height(dimensions.size8))
                     }
                 }
+            }
+            if (!state.isUserEventCreator) {
+                Spacer(modifier = Modifier.height(dimensions.size16))
+                TaskyButton(
+                    content = {
+                        if (state.isJoinOrLeaveEventInProgress) {
+                            CircularProgressIndicator(
+                                color = Color.White
+                            )
+                        }
+                        else {
+                            Text(
+                                text = stringResource(id = if (state.isGoing) R.string.leave else R.string.join),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    },
+                    backgroundColor = Color.Black,
+                    contentColor = Color.White,
+                    shape = CircleShape,
+                    onButtonClick = {
+                        onEvent(EventDetailsEvent.OnJoinOrLeaveEventClick)
+                    },
+                    enabled = !state.isJoinOrLeaveEventInProgress,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = dimensions.size16)
+                )
+                Spacer(modifier = Modifier.height(dimensions.size16))
             }
         }
     }
@@ -677,7 +733,20 @@ private fun EventDetailsScreenContent(
 private fun EventDetailsScreenPreview() {
     TaskyTheme {
         EventDetailsScreenContent(state = EventDetailsState(
+            eventPhotos = listOf(
+                Uri.parse("https://www.jrebel.com/sites/default/files/image/2021-01/what%20is%20kotlin%20banner%20image.png")
+            ),
             isEditable = true,
+            isUserEventCreator = true,
+            attendees = listOf(EventAttendee(
+                "kerimnuhanovic18@gmail.com",
+                "Kerim Nuhanovic",
+                "userid",
+                "eventId",
+                true,
+                null,
+                LocalDateTime.now()
+            ))
         ), onEvent = {})
     }
 }

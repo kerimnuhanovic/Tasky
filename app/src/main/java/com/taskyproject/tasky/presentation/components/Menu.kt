@@ -23,7 +23,7 @@ import com.taskyproject.tasky.ui.theme.TaskyTheme
 fun Menu(
     isExpanded: Boolean,
     menuItems: List<MenuItem>,
-    onExpandChange: () -> Unit,
+    onExpandChange: () -> Unit
 ) {
     ExposedDropdownMenuBox(
         expanded = isExpanded,

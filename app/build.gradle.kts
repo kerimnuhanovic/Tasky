@@ -91,6 +91,9 @@ dependencies {
     implementation(libs.ktor.json)
     implementation(libs.coil)
 
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+
 }
 
 kapt {

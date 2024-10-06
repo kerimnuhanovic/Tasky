@@ -63,4 +63,28 @@ class ReminderDaoImpl @Inject constructor(
     override suspend fun deleteReminder(reminderId: String) {
         reminderEntityQueries.deleteReminder(reminderId)
     }
+
+    override suspend fun listRemindersForDelete(): List<String> {
+        return reminderEntityQueries.listRemindersForDelete().executeAsList()
+    }
+
+    override suspend fun listRemindersForCreate(): List<ReminderEntity> {
+        return reminderEntityQueries.listRemindersForCreate().executeAsList()
+    }
+
+    override suspend fun listRemindersForUpdate(): List<ReminderEntity> {
+        return reminderEntityQueries.listRemindersForUpdate().executeAsList()
+    }
+
+    override suspend fun markReminderAsAddedOnRemote(id: String) {
+        reminderEntityQueries.markReminderAsAddedOnRemote(id)
+    }
+
+    override suspend fun markReminderAsUpdated(id: String) {
+        reminderEntityQueries.markReminderAsUpdated(id)
+    }
+
+    override suspend fun nuke() {
+        reminderEntityQueries.nuke()
+    }
 }
