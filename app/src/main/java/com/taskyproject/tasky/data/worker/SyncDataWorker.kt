@@ -156,8 +156,6 @@ class SyncDataWorker @AssistedInject constructor(
 
             Result.success()
         } catch (ex: Exception) {
-            println("blabla-")
-            println(ex)
             Result.failure()
         }
     }

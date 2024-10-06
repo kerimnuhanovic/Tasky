@@ -164,7 +164,6 @@ private fun AgendaScreenContent(
                     },
                     isExpanded = state.isLogoutMenuExpanded,
                     onExpandChange = {
-                        println("BLA BLA")
                         onEvent(AgendaEvent.OnLogoutMenuClick)
                     },
                     menuItems = listOf(

@@ -299,7 +299,7 @@ class EventDetailsViewModel @Inject constructor(
                         )
                     }
                 )
-                println(event.remindAt)
+
                 val allPhotos = state.value.eventPhotos.map { photo ->
                     createFileFromUriUseCase(photo)
                 }

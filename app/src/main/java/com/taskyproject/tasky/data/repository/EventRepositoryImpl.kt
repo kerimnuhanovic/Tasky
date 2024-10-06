@@ -49,7 +49,6 @@ class EventRepositoryImpl @Inject constructor(
                 )
             )
         } catch (ex: Exception) {
-            println(ex)
             return handleApiError(ex)
         }
     }
