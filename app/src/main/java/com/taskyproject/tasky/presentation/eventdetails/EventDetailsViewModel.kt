@@ -15,6 +15,7 @@ import com.taskyproject.tasky.domain.usecase.CreateEventUseCase
 import com.taskyproject.tasky.domain.usecase.CreateFileFromUriUseCase
 import com.taskyproject.tasky.domain.usecase.GetAttendeeUseCase
 import com.taskyproject.tasky.domain.usecase.GetEventUseCase
+import com.taskyproject.tasky.domain.usecase.JoinOrLeaveEventUseCase
 import com.taskyproject.tasky.domain.usecase.UpdateEventUseCase
 import com.taskyproject.tasky.domain.util.Result
 import com.taskyproject.tasky.domain.util.prepareEventRequest
@@ -44,10 +45,12 @@ class EventDetailsViewModel @Inject constructor(
     private val createFileFromUriUseCase: CreateFileFromUriUseCase,
     private val getEventUseCase: GetEventUseCase,
     private val checkIsImageLargerThanOneMBUseCase: CheckIsImageLargerThanOneMBUseCase,
-    private val updateEventUseCase: UpdateEventUseCase
+    private val updateEventUseCase: UpdateEventUseCase,
+    private val joinOrLeaveEventUseCase: JoinOrLeaveEventUseCase
 ) : ViewModel() {
     private val eventId = savedStateHandle.toRoute<Route.EventDetails>().eventId
-    private val shouldOpenInEditMode = savedStateHandle.toRoute<Route.EventDetails>().shouldOpenInEditMode
+    private val shouldOpenInEditMode =
+        savedStateHandle.toRoute<Route.EventDetails>().shouldOpenInEditMode
 
     private val _state = MutableStateFlow(
         EventDetailsState(
@@ -212,7 +215,9 @@ class EventDetailsViewModel @Inject constructor(
                     event.attendee == it
                 }
                 _state.value = state.value.copy(
-                    attendeesToDelete = if (attendeeToDelete != null) state.value.attendeesToDelete.plus(event.attendee) else state.value.attendeesToDelete,
+                    attendeesToDelete = if (attendeeToDelete != null) state.value.attendeesToDelete.plus(
+                        event.attendee
+                    ) else state.value.attendeesToDelete,
                     attendees = state.value.attendees.minus(event.attendee)
                 )
             }
@@ -223,8 +228,50 @@ class EventDetailsViewModel @Inject constructor(
                 }
                 _state.value = state.value.copy(
                     eventPhotos = state.value.eventPhotos.minus(event.photo),
-                    photosToDelete = if (photoToDelete != null) state.value.photosToDelete.plus(photoToDelete) else state.value.photosToDelete
+                    photosToDelete = if (photoToDelete != null) state.value.photosToDelete.plus(
+                        photoToDelete
+                    ) else state.value.photosToDelete
                 )
+            }
+
+            EventDetailsEvent.OnJoinOrLeaveEventClick -> {
+                viewModelScope.launch {
+                    _state.value = state.value.copy(
+                        isJoinOrLeaveEventInProgress = true
+                    )
+                    when (val result = joinOrLeaveEventUseCase(eventId!!, !state.value.isGoing)) {
+                        is Result.Success -> {
+                            val currentUserId = preferences.readUserId()
+                            val attendees = state.value.attendees.map {
+                                if (it.userId == currentUserId) {
+                                    it.copy(
+                                        isGoing = !it.isGoing
+                                    )
+                                } else {
+                                    it
+                                }
+                            }
+                            _state.value = state.value.copy(
+                                isJoinOrLeaveEventInProgress = false,
+                                isGoing = !state.value.isGoing,
+                                attendees = attendees
+                            )
+                        }
+
+                        is Result.Failure -> {
+                            _state.value = state.value.copy(
+                                isJoinOrLeaveEventInProgress = false
+                            )
+                            _uiEvent.send(
+                                UiEvent.ShowToast(
+                                    ToastMessage.JoinOrLeaveEventFailed(
+                                        result.errorMessageId
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -252,6 +299,7 @@ class EventDetailsViewModel @Inject constructor(
                         )
                     }
                 )
+
                 val allPhotos = state.value.eventPhotos.map { photo ->
                     createFileFromUriUseCase(photo)
                 }
@@ -369,6 +417,7 @@ class EventDetailsViewModel @Inject constructor(
     private fun getEvent() {
         viewModelScope.launch {
             eventId?.let {
+                val currentUserId = preferences.readUserId()
                 val event = getEventUseCase(it)
                 _state.value = state.value.copy(
                     isCreateOperation = false,
@@ -380,7 +429,7 @@ class EventDetailsViewModel @Inject constructor(
                     toDate = millisToLocalDate(event.to),
                     selectedReminderOption = TimeOption.fromTime(
                         differenceInMinutes(
-                            event.to,
+                            event.from,
                             event.remindAt
                         ).toString()
                     ),
@@ -390,7 +439,10 @@ class EventDetailsViewModel @Inject constructor(
                         Uri.parse(photo.url)
                     },
                     initialPhotos = event.photos,
-                    host = event.host
+                    host = event.host,
+                    isUserEventCreator = event.host == currentUserId,
+                    isGoing = event.attendees.find { attendee -> attendee.userId == currentUserId }?.isGoing
+                        ?: true
                 )
             }
         }

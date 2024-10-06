@@ -16,12 +16,15 @@ activityCompose = "1.8.0"
 composeBom = "2023.08.00"
 navigationCompose = "2.8.0-alpha08"
 ktor = "2.3.11"
+workRuntimeKtx = "2.9.1"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "androidDriver" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

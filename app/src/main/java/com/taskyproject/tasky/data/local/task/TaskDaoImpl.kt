@@ -65,4 +65,28 @@ class TaskDaoImpl @Inject constructor(
     override suspend fun deleteTask(taskId: String) {
         taskEntityQueries.deleteTask(taskId)
     }
+
+    override suspend fun listTasksForDelete(): List<String> {
+        return taskEntityQueries.listTasksForDelete().executeAsList()
+    }
+
+    override suspend fun listTasksForCreate(): List<TaskEntity> {
+        return taskEntityQueries.listTasksForCreate().executeAsList()
+    }
+
+    override suspend fun listTasksForUpdate(): List<TaskEntity> {
+        return taskEntityQueries.listTasksForUpdate().executeAsList()
+    }
+
+    override suspend fun markTaskAsAddedOnRemote(id: String) {
+        taskEntityQueries.markTaskAsAddedOnRemote(id)
+    }
+
+    override suspend fun markTaskAsUpdated(id: String) {
+        taskEntityQueries.markTaskAsUpdated(id)
+    }
+
+    override suspend fun nuke() {
+        taskEntityQueries.nuke()
+    }
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -33,32 +34,34 @@ fun ImageBox(
 ) {
     val dimensions = LocalDimensions.current
 
-    Image(
-        modifier = Modifier
-            .height(dimensions.size60)
-            .width(dimensions.size60)
-            .border(
-                width = dimensions.size2,
-                color = LightBlue
-            ),
-        painter = rememberAsyncImagePainter(model = image),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
-    Card(
-        shape = CircleShape,
-        modifier = modifier
-            .size(dimensions.size20)
-            .offset(x = dimensions.size50, y = dimensions.minus10),
-        colors = CardDefaults.cardColors(
-            containerColor = MediumGray
-        )
-    ) {
-        Icon(
-            imageVector = Icons.Default.Clear,
+    Box {
+        Image(
+            modifier = Modifier
+                .height(dimensions.size60)
+                .width(dimensions.size60)
+                .border(
+                    width = dimensions.size2,
+                    color = LightBlue
+                ),
+            painter = rememberAsyncImagePainter(model = image),
             contentDescription = null,
-            tint = DarkGray,
-            modifier = Modifier.clickable { onExitClick() })
+            contentScale = ContentScale.Crop
+        )
+        Card(
+            shape = CircleShape,
+            modifier = modifier
+                .size(dimensions.size20)
+                .offset(x = dimensions.size50, y = dimensions.minus10),
+            colors = CardDefaults.cardColors(
+                containerColor = MediumGray
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = null,
+                tint = DarkGray,
+                modifier = Modifier.clickable { onExitClick() })
+        }
     }
 }
 

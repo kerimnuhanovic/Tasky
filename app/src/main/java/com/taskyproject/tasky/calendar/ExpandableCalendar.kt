@@ -2,16 +2,21 @@ package com.taskyproject.tasky.calendar
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.taskyproject.tasky.calendar.component.InlineCalendar
@@ -23,14 +28,21 @@ import com.taskyproject.tasky.calendar.core.CalendarTheme
 import com.taskyproject.tasky.calendar.core.Period
 import com.taskyproject.tasky.calendar.core.calendarDefaultTheme
 import com.taskyproject.tasky.calendar.utils.getWeekStartDate
+import com.taskyproject.tasky.domain.model.MenuItem
+import com.taskyproject.tasky.presentation.components.LogoutMenu
 import com.taskyproject.tasky.ui.theme.LocalDimensions
+import com.taskyproject.tasky.ui.theme.MediumGray
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
 fun ExpandableCalendar(
     onDayClick: (LocalDate) -> Unit,
-    theme: CalendarTheme = calendarDefaultTheme
+    theme: CalendarTheme = calendarDefaultTheme,
+    isExpanded: Boolean,
+    menuItems: List<MenuItem>,
+    onExpandChange: () -> Unit,
+    userInitials: String
 ) {
     val viewModel: CalendarViewModel = viewModel()
     val loadedDates = viewModel.visibleDates.collectAsState()
@@ -44,7 +56,11 @@ fun ExpandableCalendar(
         onIntent = viewModel::onIntent,
         calendarExpanded = calendarExpanded.value,
         theme = theme,
-        onDayClick = onDayClick
+        onDayClick = onDayClick,
+        isExpanded = isExpanded,
+        menuItems = menuItems,
+        onExpandChange = onExpandChange,
+        userInitials = userInitials
     )
 }
 
@@ -56,7 +72,11 @@ private fun ExpandableCalendar(
     onIntent: (CalendarIntent) -> Unit,
     calendarExpanded: Boolean,
     theme: CalendarTheme,
-    onDayClick: (LocalDate) -> Unit
+    onDayClick: (LocalDate) -> Unit,
+    isExpanded: Boolean,
+    menuItems: List<MenuItem>,
+    onExpandChange: () -> Unit,
+    userInitials: String
 ) {
     val dimensions = LocalDimensions.current
     Column(
@@ -80,6 +100,14 @@ private fun ExpandableCalendar(
                 collapse = { onIntent(CalendarIntent.CollapseCalendar) },
                 color = theme.headerTextColor
             )
+            Spacer(modifier = Modifier.weight(1f))
+            LogoutMenu(
+                isExpanded = isExpanded,
+                menuItems = menuItems,
+                onExpandChange = onExpandChange,
+                userInitials = userInitials
+            )
+            Spacer(modifier = Modifier.width(dimensions.size8))
         }
         if (calendarExpanded) {
             MonthViewCalendar(

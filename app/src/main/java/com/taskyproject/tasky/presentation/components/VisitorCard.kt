@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +37,8 @@ fun VisitorCard(
     fullName: String,
     isCreator: Boolean,
     modifier: Modifier = Modifier,
-    onDeleteClick: () -> Unit = {}
+    onDeleteClick: () -> Unit = {},
+    shouldDisplayDeleteIcon: Boolean = true
 ) {
     val dimensions = LocalDimensions.current
     val firstName = fullName.split(" ")[0]
@@ -46,6 +48,7 @@ fun VisitorCard(
         modifier = modifier
             .fillMaxWidth()
             .height(dimensions.size46)
+            .clip(RoundedCornerShape(dimensions.size8))
             .background(LightGray)
             .padding(horizontal = dimensions.size8)
     ) {
@@ -71,7 +74,7 @@ fun VisitorCard(
             color = DarkGray
         )
         Spacer(modifier = Modifier.weight(1f))
-        if (!isCreator) {
+        if (!isCreator && shouldDisplayDeleteIcon) {
             Icon(painter = painterResource(
                 id = R.drawable.trash),
                 contentDescription = null,
@@ -81,7 +84,7 @@ fun VisitorCard(
                 }
             )
         }
-        else {
+        if (isCreator) {
             Text(
                 text = stringResource(id = R.string.creator),
                 style = MaterialTheme.typography.bodyMedium,
@@ -98,7 +101,8 @@ private fun VisitorCardPreview() {
     TaskyTheme {
         VisitorCard(
             fullName = "Kerim Nuhanovic",
-            isCreator = false
+            isCreator = false,
+            shouldDisplayDeleteIcon = false
         )
     }
 }

@@ -48,11 +48,13 @@ object EventModule {
         eventApi: EventApi,
         eventDao: EventDao,
         photoDao: PhotoDao,
-        eventAttendeeDao: EventAttendeeDao
+        eventAttendeeDao: EventAttendeeDao,
+        preferences: Preferences
     ): EventRepository = EventRepositoryImpl(
         eventApi = eventApi,
         eventDao = eventDao,
         photoDao = photoDao,
-        eventAttendeeDao = eventAttendeeDao
+        eventAttendeeDao = eventAttendeeDao,
+        preferences = preferences
     )
 }

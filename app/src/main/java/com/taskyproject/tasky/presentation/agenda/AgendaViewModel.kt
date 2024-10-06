@@ -7,10 +7,13 @@ import com.taskyproject.tasky.domain.model.AgendaItem
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.model.Reminder
 import com.taskyproject.tasky.domain.model.Task
+import com.taskyproject.tasky.domain.preferences.Preferences
 import com.taskyproject.tasky.domain.usecase.DeleteEventUseCase
 import com.taskyproject.tasky.domain.usecase.DeleteReminderUseCase
 import com.taskyproject.tasky.domain.usecase.DeleteTaskUseCase
 import com.taskyproject.tasky.domain.usecase.GetAgendaUseCase
+import com.taskyproject.tasky.domain.usecase.LogoutUseCase
+import com.taskyproject.tasky.domain.usecase.NukeDataUseCase
 import com.taskyproject.tasky.domain.util.Result
 import com.taskyproject.tasky.navigation.Route
 import com.taskyproject.tasky.presentation.util.AgendaItemType
@@ -36,7 +39,10 @@ class AgendaViewModel @Inject constructor(
     private val getAgendaUseCase: GetAgendaUseCase,
     private val deleteEventUseCase: DeleteEventUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
-    private val deleteTaskUseCase: DeleteTaskUseCase
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val nukeDataUseCase: NukeDataUseCase,
+    private val preferences: Preferences
 ) : ViewModel() {
 
     private val selectedDate = MutableStateFlow<LocalDate>(LocalDate.now())
@@ -47,7 +53,10 @@ class AgendaViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    private val _state = MutableStateFlow(AgendaState())
+    private val _state = MutableStateFlow(AgendaState(
+        userInitials = preferences.readUserFullName()!!.split(" ")
+            .filter { it.isNotEmpty() }.joinToString("") { it.first().toString() }
+    ))
     val state = combine(_state, agendaFlow) { state, agenda ->
         state.copy(
             agendaItems = agenda
@@ -101,6 +110,9 @@ class AgendaViewModel @Inject constructor(
                 )
             }
             is AgendaEvent.OnEditAgendaItemClick -> {
+                _state.value = state.value.copy(
+                    indexOfOpenedMenu = null
+                )
                 viewModelScope.launch {
                     when (event.agenda) {
                         is Event -> {
@@ -121,6 +133,9 @@ class AgendaViewModel @Inject constructor(
                 )
             }
             is AgendaEvent.OnOpenAgendaItemClick -> {
+                _state.value = state.value.copy(
+                    indexOfOpenedMenu = null
+                )
                 viewModelScope.launch {
                     when (event.agenda) {
                         is Event -> {
@@ -145,6 +160,39 @@ class AgendaViewModel @Inject constructor(
                     agendaItemToDelete = null
                 )
             }
+
+            AgendaEvent.OnLogoutClick -> {
+                _state.value = state.value.copy(
+                    isLogoutMenuExpanded = false,
+                    isLogoutModalOpened = true
+                )
+            }
+            AgendaEvent.OnLogoutMenuClick -> {
+                _state.value = state.value.copy(
+                    isLogoutMenuExpanded = !state.value.isLogoutMenuExpanded
+                )
+            }
+
+            AgendaEvent.OnLogoutConfirmClick -> {
+                logout()
+            }
+            AgendaEvent.OnLogoutDismissClick -> {
+                _state.value = state.value.copy(
+                    isLogoutModalOpened = false
+                )
+            }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            _state.value = state.value.copy(
+                isLogoutModalOpened = false
+            )
+           logoutUseCase()
+           nukeDataUseCase()
+           preferences.deleteToken()
+            _uiEvent.send(UiEvent.NavigateWithPopup(navigateRoute = Route.Login, popRoute = Route.Agenda))
         }
     }
 

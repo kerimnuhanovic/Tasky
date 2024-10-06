@@ -21,4 +21,10 @@ interface TaskDao {
     )
     suspend fun markTaskForDelete(taskId: String)
     suspend fun deleteTask(taskId: String)
+    suspend fun listTasksForDelete(): List<String>
+    suspend fun listTasksForCreate(): List<TaskEntity>
+    suspend fun listTasksForUpdate(): List<TaskEntity>
+    suspend fun markTaskAsAddedOnRemote(id: String)
+    suspend fun markTaskAsUpdated(id: String)
+    suspend fun nuke()
 }

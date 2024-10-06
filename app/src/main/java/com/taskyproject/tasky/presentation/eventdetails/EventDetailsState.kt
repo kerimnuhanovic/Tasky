@@ -35,5 +35,8 @@ data class EventDetailsState(
     val host: String = "",
     val attendeesToDelete: List<EventAttendee> = emptyList(),
     val photosToDelete: List<Photo> = emptyList(),
-    val initialEventAttendees: List<EventAttendee> = emptyList()
+    val initialEventAttendees: List<EventAttendee> = emptyList(),
+    val isUserEventCreator: Boolean = true,
+    val isJoinOrLeaveEventInProgress: Boolean = false,
+    val isGoing: Boolean = true
 )

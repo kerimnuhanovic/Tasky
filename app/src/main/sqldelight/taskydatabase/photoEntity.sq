@@ -17,3 +17,9 @@ UPDATE photoEntity SET shouldBeDeleted = ? WHERE key = ?;
 
 deletePhoto:
 DELETE FROM photoEntity WHERE key = ?;
+
+getEventPhotosForDelete:
+SELECT * FROM photoEntity WHERE eventId = ? AND shouldBeDeleted = 1;
+
+deleteEventPhotos:
+DELETE FROM photoEntity WHERE eventId = ?;

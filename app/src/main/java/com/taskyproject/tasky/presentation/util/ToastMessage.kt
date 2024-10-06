@@ -19,4 +19,6 @@ sealed class ToastMessage(val valueId: Int) {
     data class EventUpdateFailed(val messageId: Int) : ToastMessage(messageId)
     data class AgendaItemDeleted(val messageId: Int) : ToastMessage(messageId)
     data class AgendaItemDeleteFailed(val messageId: Int) : ToastMessage(messageId)
+    data class JoinOrLeaveEventFailed(val messageId: Int) : ToastMessage(messageId)
+    data class LoginFailed(val messageId: Int) : ToastMessage(messageId)
 }

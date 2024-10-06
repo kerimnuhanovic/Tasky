@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.taskyproject.tasky.calendar.ExpandableCalendar
 import com.taskyproject.tasky.calendar.core.calendarDefaultTheme
+import com.taskyproject.tasky.domain.model.MenuItem
 import com.taskyproject.tasky.ui.theme.Black
 import com.taskyproject.tasky.ui.theme.CalendarGray
 import com.taskyproject.tasky.ui.theme.TaskyTheme
@@ -15,7 +16,11 @@ import java.time.LocalDate
 
 @Composable
 fun Calendar(
-    onDateSelect: (LocalDate) -> Unit
+    onDateSelect: (LocalDate) -> Unit,
+    isExpanded: Boolean,
+    menuItems: List<MenuItem>,
+    onExpandChange: () -> Unit,
+    userInitials: String
 ) {
     ExpandableCalendar(
         theme = calendarDefaultTheme.copy(
@@ -28,7 +33,12 @@ fun Calendar(
             weekDaysTextColor = Black
         ), onDayClick = {
             onDateSelect(it)
-        })
+        },
+        isExpanded = isExpanded,
+        menuItems = menuItems,
+        onExpandChange = onExpandChange,
+        userInitials = userInitials
+    )
 }
 
 @Composable
@@ -36,7 +46,13 @@ fun Calendar(
 fun CalendarPreview() {
     TaskyTheme {
         Calendar(
-            onDateSelect = {}
+            onDateSelect = {},
+            isExpanded = true,
+            menuItems = listOf(
+                MenuItem("Log out", {})
+            ),
+            onExpandChange = {},
+            userInitials = "KN"
         )
     }
 }

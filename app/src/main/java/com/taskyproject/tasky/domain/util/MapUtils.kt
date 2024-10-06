@@ -32,7 +32,7 @@ fun prepareEventRequest(
         to = LocalDateTime.of(toDate, toTime).atZone(ZoneId.systemDefault()).toInstant()
             .toEpochMilli(),
         host = host,
-        remindAt = LocalDateTime.of(toDate, toTime).minusMinutes(remindBefore.toLong())
+        remindAt = LocalDateTime.of(fromDate, fromTime).minusMinutes(remindBefore.toLong())
             .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
         isUserEventCreator = true,
         attendees = attendees.map { attendee ->

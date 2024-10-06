@@ -26,4 +26,12 @@ class PhotoDaoImpl @Inject constructor(
     override suspend fun deletePhoto(key: String) {
         photoEntityQueries.deletePhoto(key)
     }
+
+    override suspend fun getEventPhotosForDelete(eventId: String): List<PhotoEntity> {
+        return photoEntityQueries.getEventPhotosForDelete(eventId).executeAsList()
+    }
+
+    override suspend fun deleteEventPhotos(eventId: String) {
+        photoEntityQueries.deleteEventPhotos(eventId)
+    }
 }

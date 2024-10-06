@@ -24,4 +24,10 @@ interface ReminderDao {
     )
     suspend fun markReminderForDelete(reminderId: String)
     suspend fun deleteReminder(reminderId: String)
+    suspend fun listRemindersForDelete(): List<String>
+    suspend fun listRemindersForCreate(): List<ReminderEntity>
+    suspend fun listRemindersForUpdate(): List<ReminderEntity>
+    suspend fun markReminderAsAddedOnRemote(id: String)
+    suspend fun markReminderAsUpdated(id: String)
+    suspend fun nuke()
 }

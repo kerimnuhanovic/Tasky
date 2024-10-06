@@ -8,4 +8,6 @@ interface PhotoDao {
     suspend fun getEventPhotos(eventId: String): List<PhotoEntity>
     suspend fun markPhotoForDelete(photoKey: String, shouldBeDeleted: Boolean)
     suspend fun deletePhoto(key: String)
+    suspend fun getEventPhotosForDelete(eventId: String): List<PhotoEntity>
+    suspend fun deleteEventPhotos(eventId: String)
 }

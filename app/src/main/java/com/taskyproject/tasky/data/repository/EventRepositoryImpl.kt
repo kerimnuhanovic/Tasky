@@ -11,6 +11,7 @@ import com.taskyproject.tasky.data.network.event.EventApi
 import com.taskyproject.tasky.domain.model.Event
 import com.taskyproject.tasky.domain.model.EventAttendee
 import com.taskyproject.tasky.domain.model.Photo
+import com.taskyproject.tasky.domain.preferences.Preferences
 import com.taskyproject.tasky.domain.repository.EventRepository
 import java.io.File
 import java.net.UnknownHostException
@@ -23,6 +24,7 @@ class EventRepositoryImpl @Inject constructor(
     private val eventDao: EventDao,
     private val photoDao: PhotoDao,
     private val eventAttendeeDao: EventAttendeeDao,
+    private val preferences: Preferences
 ) : EventRepository {
     override suspend fun createEvent(event: Event, photos: List<File>): Result<Event> {
         try {
@@ -84,7 +86,7 @@ class EventRepositoryImpl @Inject constructor(
             eventDao.updateEvent(
                 event = event,
                 isAddedOnRemote = eventDocument.isAddedOnRemote == 1L,
-                shouldBeUpdated = true
+                shouldBeUpdated = eventDocument.isAddedOnRemote == 1L
             )
             deletedAttendees.forEach {
                 eventAttendeeDao.deleteEventAttendee(it.userId)
@@ -130,14 +132,35 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun deleteEvent(eventId: String): Result<Unit> {
         return try {
-            eventDao.markEventForDelete(eventId)
-            eventApi.deleteEvent(eventId)
-            eventDao.deleteEvent(eventId)
+            val event = eventDao.getEvent(eventId)
+            if (event.isAddedOnRemote == 1L) {
+                eventDao.markEventForDelete(eventId)
+                eventApi.deleteEvent(eventId)
+                eventDao.deleteEvent(eventId)
+            } else {
+                eventDao.deleteEvent(eventId)
+            }
             Result.Success(Unit)
         } catch (ex: UnknownHostException) {
             Result.Success(Unit)
         } catch (ex: Exception) {
             handleApiError(ex)
         }
+    }
+
+    override suspend fun joinOrLeaveEvent(eventId: String, isGoing: Boolean): Result<Unit> {
+        return try {
+            val currentUserId = preferences.readUserId()!!
+            val event = eventDao.getEvent(eventId)
+            val eventAttendees = eventAttendeeDao.getEventAttendees(eventId)
+            eventAttendeeDao.updateIsUserGoingToEvent(userId = currentUserId, eventId = eventId, isGoing = isGoing)
+            eventApi.updateEvent(event.toUpdateEventRequestDto(isGoing, emptyList(), eventAttendees), emptyList())
+            Result.Success(Unit)
+        } catch (ex: UnknownHostException) {
+            Result.Success(Unit)
+        } catch (ex: Exception) {
+            handleApiError(ex)
+        }
+
     }
 }

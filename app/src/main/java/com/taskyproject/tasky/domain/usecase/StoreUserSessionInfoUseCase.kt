@@ -6,7 +6,14 @@ import javax.inject.Inject
 class StoreUserSessionInfoUseCase @Inject constructor(
     private val preferences: Preferences
 ) {
-    operator fun invoke(accessToken: String, userId: String, fullName: String, accessTokenExpiration: Long) {
-        preferences.saveUserSessionInfo(accessToken, userId, fullName, accessTokenExpiration)
+    operator fun invoke(
+        accessToken: String,
+        userId: String,
+        fullName: String,
+        accessTokenExpiration: Long,
+        email: String,
+        password: String
+    ) {
+        preferences.saveUserSessionInfo(accessToken, userId, fullName, accessTokenExpiration, email, password)
     }
 }

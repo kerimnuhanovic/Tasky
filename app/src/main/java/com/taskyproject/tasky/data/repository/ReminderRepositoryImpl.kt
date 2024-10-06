@@ -39,7 +39,7 @@ class ReminderRepositoryImpl @Inject constructor(
             reminderDao.updateReminder(
                 reminder = reminder,
                 isAddedOnRemote = reminderDocument.isAddedOnRemote == 1L,
-                shouldBeUpdated = true
+                shouldBeUpdated = reminderDocument.isAddedOnRemote == 1L
             )
             if (reminderDocument.isAddedOnRemote == 1L) {
                 reminderApi.updateReminder(reminder)
@@ -55,9 +55,14 @@ class ReminderRepositoryImpl @Inject constructor(
 
     override suspend fun deleteReminder(reminderId: String): Result<Unit> {
         return try {
-            reminderDao.markReminderForDelete(reminderId)
-            reminderApi.deleteReminder(reminderId)
-            reminderDao.deleteReminder(reminderId)
+            val reminder = reminderDao.getReminder(reminderId)
+            if (reminder.isAddedOnRemote == 1L) {
+                reminderDao.markReminderForDelete(reminderId)
+                reminderApi.deleteReminder(reminderId)
+                reminderDao.deleteReminder(reminderId)
+            } else {
+                reminderDao.deleteReminder(reminderId)
+            }
             Result.Success(Unit)
         } catch (ex: UnknownHostException) {
             return Result.Success(Unit)
